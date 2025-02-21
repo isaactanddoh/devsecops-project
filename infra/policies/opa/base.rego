@@ -73,3 +73,21 @@ deny contains msg if {
     not volume.readOnly
     msg := sprintf("Volume '%v' in container '%v' must be read-only", [volume.sourceVolume, container.name])
 }
+
+deny[msg] {
+    print("Evaluating resource:", resource)  # Debug output
+    resource := tfplan.resource_changes[_]
+    print("Resource type:", resource.type)   # Debug output
+    not allowed_resource_types[resource.type]
+    msg := sprintf("Resource type '%v' is not allowed", [resource.type])
+}
+
+# Add debug rules
+debug_input {
+    print("Full tfplan:", tfplan)
+}
+
+debug_resources {
+    resource := tfplan.resource_changes[_]
+    print("Checking resource:", resource)
+}

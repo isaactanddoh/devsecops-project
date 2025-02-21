@@ -72,12 +72,10 @@ jobs:
       run: |
         checkov -d . --quiet
         echo "Running OPA tests..."
-        if ! timeout 300 make test-opa; then
-          if [ $? -eq 124 ]; then
-            echo "::error::OPA tests timed out after 5 minutes"
-          else
-            echo "::error::OPA tests failed"
-          fi
+        if ! make test-opa 2>&1 | tee opa_output.log; then
+          echo "OPA test failed. Full output:"
+          cat opa_output.log
+          echo "::error::OPA policy violations found"
           exit 1
         fi
 
