@@ -1,0 +1,149 @@
+name: Terraform Deployment Pipeline
+
+on:
+  push:
+    branches: [ dev, staging, main ]
+
+permissions:
+  id-token: write
+  contents: read
+
+defaults:
+  run:
+    working-directory: infra
+
+jobs:
+  deploy-dev:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    environment:
+      name: dev
+      url: ${{ steps.deploy.outputs.environment_url }}
+    concurrency: 
+      group: dev-environment
+      cancel-in-progress: false
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+    
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.IAM_ROLE }}
+        aws-region: eu-west-1
+        role-session-name: GitHubActionsDev
+    
+    - name: Terraform Init
+      run: terraform init
+    
+    - name: Select Dev Workspace
+      run: terraform workspace select dev || terraform workspace new dev
+    
+    - name: Terraform Plan
+      run: terraform plan -var-file="environments/terraform.tfvars.dev" -out=tfplan
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
+
+    - name: Notify Slack
+      if: always()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+        text: "Dev Infrastructure Deployment ${{ job.status }}!"
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  deploy-staging:
+    if: github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: ${{ steps.deploy.outputs.environment_url }}
+    concurrency: 
+      group: staging-environment
+      cancel-in-progress: false
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+    
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.IAM_ROLE }}
+        aws-region: eu-west-1
+        role-session-name: GitHubActionsStaging
+    
+    - name: Terraform Init
+      run: terraform init
+    
+    - name: Select Staging Workspace
+      run: terraform workspace select staging || terraform workspace new staging
+    
+    - name: Terraform Plan
+      run: terraform plan -var-file="environments/terraform.tfvars.staging" -out=tfplan
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
+
+    - name: Notify Slack
+      if: always()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+        text: "Staging Infrastructure Deployment ${{ job.status }}!"
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  deploy-prod:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: prod
+      url: ${{ steps.deploy.outputs.environment_url }}
+    concurrency: 
+      group: prod-environment
+      cancel-in-progress: false
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+    
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.IAM_ROLE }}
+        aws-region: eu-west-1
+        role-session-name: GitHubActionsProd
+    
+    - name: Terraform Init
+      run: terraform init
+    
+    - name: Select Prod Workspace
+      run: terraform workspace select prod || terraform workspace new prod
+    
+    - name: Terraform Plan
+      run: terraform plan -var-file="environments/terraform.tfvars.prod" -out=tfplan
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
+
+    - name: Notify Slack
+      if: always()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+        text: "Production Infrastructure Deployment ${{ job.status }}!"
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} 
