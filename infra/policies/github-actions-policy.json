@@ -4,29 +4,7 @@
     {
       "Effect": "Allow",
       "Action": [
-        "iam:*",
-        "organizations:*",
-        "account:*",
-        "s3:*",
-        "dynamodb:*",
-        "ec2:*",
-        "ecs:*",
-        "ecr:*",
-        "logs:*",
-        "cloudwatch:*",
-        "elasticloadbalancing:*",
-        "acm:*",
-        "wafv2:*",
-        "route53:*",
-        "sns:*",
-        "kms:*",
-        "sts:*",
-        "secretsmanager:*",
-        "ssm:*",
-        "cloudfront:*",
-        "lambda:*",
-        "apigateway:*",
-        "tag:*"
+        "*"
       ],
       "Resource": "*"
     },
