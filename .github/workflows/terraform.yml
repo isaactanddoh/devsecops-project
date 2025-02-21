@@ -61,8 +61,25 @@ jobs:
     - name: Run Checkov Tests
       run: checkov -d . --quiet
 
-    - name: Run OPA Tests
-      run: make test-opa
+    - name: Configure AWS Credentials for Tests
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.IAM_ROLE }}
+        aws-region: eu-west-1
+        role-session-name: GitHubActionsOPATest
+
+    - name: Security Checks
+      run: |
+        checkov -d . --quiet
+        echo "Running OPA tests..."
+        if ! timeout 300 make test-opa; then
+          if [ $? -eq 124 ]; then
+            echo "::error::OPA tests timed out after 5 minutes"
+          else
+            echo "::error::OPA tests failed"
+          fi
+          exit 1
+        fi
 
     - name: Run Terraform Test
       run: terraform test -var-file="environments/terraform.tfvars.$WORKSPACE"
