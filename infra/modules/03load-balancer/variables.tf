@@ -19,40 +19,40 @@ variable "waf_scope" {
   type        = string
 }
 
-variable "alb_listener_port" {
-  description = "Port for ALB listener"
-  type        = number
-}
+# variable "alb_listener_port" {
+#   description = "Port for ALB listener"
+#   type        = number
+# }
 
-variable "alb_target_group_name" {
-  description = "Target Group for ECS tasks"
-  type        = string
-}
+# variable "alb_target_group_name" {
+#   description = "Target Group for ECS tasks"
+#   type        = string
+# }
 
-variable "health_check_path" {
-  description = "Health check path for ALB"
-  type        = string
-  default     = "/"
-}
+# variable "health_check_path" {
+#   description = "Health check path for ALB"
+#   type        = string
+#   default     = "/"
+# }
 
 variable "alb_https_listener_port" {
   description = "HTTPS port for ALB listener"
   type        = number
 }
 
-# ALB Name
-variable "alb_name" {
-  description = "The name of the Application Load Balancer"
-  type        = string
-  default     = "secure-ci-cd-alb"
-}
+# # ALB Name
+# variable "alb_name" {
+#   description = "The name of the Application Load Balancer"
+#   type        = string
+#   default     = "secure-ci-cd-alb"
+# }
 
-# ALB Security Group Name
-variable "alb_security_group_name" {
-  description = "Security group for ALB"
-  type        = string
-  default     = "secure-ci-cd-alb-sg"
-}
+# # ALB Security Group Name
+# variable "alb_security_group_name" {
+#   description = "Security group for ALB"
+#   type        = string
+#   default     = "secure-ci-cd-alb-sg"
+# }
 
 # SSL Certificate ARN
 variable "alb_certificate_arn" {

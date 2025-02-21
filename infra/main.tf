@@ -28,10 +28,6 @@ module "security" {
 module "load_balancer" {
   source                  = "./modules/03load-balancer"
   aws_region              = var.aws_region
-  alb_name                = var.alb_name
-  alb_listener_port       = var.alb_listener_port
-  alb_target_group_name   = var.alb_target_group_name
-  health_check_path       = var.health_check_path
   container_port          = var.container_port
   alb_https_listener_port = var.alb_https_listener_port
   alb_certificate_arn     = module.security.acm_certificate_arn
@@ -51,7 +47,6 @@ module "monitoring" {
   source                   = "./modules/05monitoring"
   aws_region               = var.aws_region
   environment              = terraform.workspace
-  ecs_cluster_name         = var.ecs_cluster_name
   project_name             = var.project_name
   owner                    = var.owner
   alb_arn_suffix           = module.load_balancer.alb_arn_suffix
@@ -74,8 +69,6 @@ module "compute" {
   owner                 = var.owner
   aws_region            = var.aws_region
   waf_acl_id            = module.security.waf_acl_arn
-  ecs_cluster_name      = var.ecs_cluster_name
-  ecr_repository_name   = var.ecr_repository_name
   container_port        = var.container_port
   container_user        = var.container_user
   vpc_id                = module.networking.vpc_id

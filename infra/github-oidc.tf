@@ -2,26 +2,30 @@
 resource "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
 
-  client_id_list = ["sts.amazonaws.com"]
+  client_id_list = [
+    "sts.amazonaws.com"
+  ]
 
   thumbprint_list = [
-    "6938fd4d98bab03faadb97b34396831e3780aea1" # GitHub's OIDC thumbprint
+    "6938fd4d98bab03faadb97b34396831e3780aea1",
+    "1c58a3a8518e8759bf075b76b750d4f2df264fcd"
   ]
 
   tags = local.common_tags
 }
 
-# Create IAM Roles for each environment
+# Create IAM Role for GitHub Actions
 resource "aws_iam_role" "github_actions" {
-  name = "github-actions-role"
-  assume_role_policy = templatefile("${path.root}/policies/github-oidc-assume-role-policy.json", {
-    account_id  = data.aws_caller_identity.current.account_id,
-    github_org  = var.github_org,
-    github_repo = var.github_repo
+  name = "github-actions-${terraform.workspace}"
+  
+  assume_role_policy = templatefile("${path.root}/policies/assume-role-policy.json", {
+    github_provider_arn = aws_iam_openid_connect_provider.github.arn
+    owner              = var.owner
+    github_repo        = var.github_repo
   })
 
   tags = merge(local.common_tags, {
-    Name = "github-actions-role"
+    Name = "github-actions-${terraform.workspace}"
   })
 }
 

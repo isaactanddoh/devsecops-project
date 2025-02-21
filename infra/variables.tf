@@ -1,15 +1,3 @@
-# Name Prefix
-variable "name_prefix" {
-  description = "Prefix for all resource names"
-  type        = string
-}
-
-# Environment Name
-variable "environment" {
-  description = "Environment name"
-  type        = string
-}
-
 # Project Name
 variable "project_name" {
   description = "Name of the project"
@@ -46,64 +34,10 @@ variable "availability_zones_count" {
   type        = number
 }
 
-# ECS Cluster and ECR
-variable "ecs_cluster_name" {
-  description = "ECS cluster name"
-  type        = string
-}
-
-# ECR Repository Name
-variable "ecr_repository_name" {
-  description = "ECR repository name"
-  type        = string
-}
-
-# Compute Resources
-variable "task_cpu" {
-  description = "CPU units for ECS task"
-  type        = string
-}
-
-# ECS Task Memory
-variable "task_memory" {
-  description = "Memory for ECS task"
-  type        = string
-}
-
 # Container Port
 variable "container_port" {
   description = "Port that the container listens on"
   type        = number
-}
-
-# Application Load Balancer Name
-variable "alb_name" {
-  description = "Application Load Balancer name"
-  type        = string
-}
-
-# ALB Security Group Name
-variable "alb_security_group_name" {
-  description = "ALB security group name"
-  type        = string
-}
-
-# ALB Listener Port
-variable "alb_listener_port" {
-  description = "Port for ALB listener"
-  type        = number
-}
-
-# Target Group Port
-variable "target_group_port" {
-  description = "Port for ALB listener"
-  type        = number
-}
-
-# ALB Target Group Name
-variable "alb_target_group_name" {
-  description = "Target Group for ECS tasks"
-  type        = string
 }
 
 # Health Check Path
@@ -192,14 +126,8 @@ variable "cost_center" {
   type        = string
 }
 
-# # Container Group Name
-# variable "container_group_name" {
-#   description = "The group name for the container"
-#   type        = string
-# }
 # Container User
 variable "container_user" {
   description = "The user for the container"
   type        = string
 }
-

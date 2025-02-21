@@ -29,6 +29,8 @@ locals {
     }[terraform.workspace]
   }
 
+  ecs_cluster_name = terraform.workspace == "prod" ? "isaac-prod" : "isaac-${terraform.workspace}"
+
   # Workspace specific configurations
   workspace_config = {
     dev = {
@@ -46,6 +48,7 @@ locals {
       cpu_target_value      = 70
       night_min_capacity    = 1
       night_max_capacity    = 2
+      target_group_port     = 80
       waf_rule_thresholds = {
         request_limit = 2000
         ip_rate_limit = 2000
@@ -66,6 +69,7 @@ locals {
       cpu_target_value      = 70
       night_min_capacity    = 1
       night_max_capacity    = 2
+      target_group_port     = 80
       waf_rule_thresholds = {
         request_limit = 5000
         ip_rate_limit = 5000
@@ -84,6 +88,7 @@ locals {
       memory_target_value   = 70
       cpu_target_value      = 70
       api_rate_limit        = 10000
+      target_group_port     = 80
       waf_rule_thresholds = {
         request_limit = 10000
         ip_rate_limit = 10000

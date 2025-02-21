@@ -35,13 +35,5 @@ resource "aws_s3_bucket_public_access_block" "terraform_state_replica" {
   restrict_public_buckets = true
 }
 
-# #enable access logging
-# resource "aws_s3_bucket_logging" "terraform_state_replica" {
-#   provider = aws.secondary
-#   bucket   = aws_s3_bucket.terraform_state_replica.id
-#   target_bucket = aws_s3_bucket.terraform_state.id
-#   target_prefix = "log/"
-# }
-
 
 
