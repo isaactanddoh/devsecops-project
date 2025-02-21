@@ -37,6 +37,9 @@ jobs:
         curl -L -o opa https://openpolicyagent.org/downloads/latest/opa_linux_amd64
         chmod 755 ./opa
         sudo mv opa /usr/local/bin/
+    
+    - name: Terraform Init
+      run: terraform init
         
     - name: Select Workspace
       run: terraform workspace new $WORKSPACE || terraform workspace select $WORKSPACE
@@ -51,9 +54,6 @@ jobs:
           git diff;
           exit 1;
         }
-      
-    - name: Terraform Init
-      run: terraform init
       
     - name: Terraform Validate
       run: terraform validate
