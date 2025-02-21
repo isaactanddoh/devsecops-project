@@ -88,11 +88,11 @@ resource "aws_cloudwatch_metric_alarm" "api_latency" {
 }
 
 resource "aws_cloudwatch_log_group" "app_logs" {
-  name = "/aws/ecs/app-${var.ecs_cluster_name}"
+  name = "/aws/ecs/app-${local.ecs_cluster_name}-app-logs"
   retention_in_days = var.log_retention_days
 
   tags = merge(local.common_tags, {
-    Name = "${var.ecs_cluster_name}-app-logs"
+    Name = "${local.ecs_cluster_name}-app-logs"
   })
 
   lifecycle {
@@ -105,11 +105,11 @@ resource "aws_cloudwatch_log_group" "app_logs" {
 
 # CloudWatch Log Group
 resource "aws_cloudwatch_log_group" "ecs_logs" {
-  name              = "/aws/ecs/${var.ecs_cluster_name}"
+  name              = "/aws/ecs/${local.ecs_cluster_name}-logs"
   retention_in_days = var.log_retention_days
 
   tags = merge(local.common_tags, {
-    Name = "${var.ecs_cluster_name}-logs"
+    Name = "${local.ecs_cluster_name}-logs"
   })
 
   lifecycle {
@@ -139,7 +139,7 @@ resource "aws_cloudwatch_log_metric_filter" "error_metric" {
 
 # CloudWatch Metric Alarms
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization" {
-  alarm_name          = "${var.ecs_cluster_name}-cpu-utilization"
+  alarm_name          = "${local.ecs_cluster_name}-cpu-utilization"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"
@@ -150,20 +150,20 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization" {
   alarm_description  = "This metric monitors ECS CPU utilization"
 
   dimensions = {
-    ClusterName = var.ecs_cluster_name
-    ServiceName = "${var.ecs_cluster_name}-service"
+    ClusterName = local.ecs_cluster_name
+    ServiceName = "${local.ecs_cluster_name}-service"
   }
 
   alarm_actions = [aws_sns_topic.alerts.arn]
   ok_actions    = [aws_sns_topic.alerts.arn]
 
   tags = merge(local.common_tags, {
-    Name = "${var.ecs_cluster_name}-cpu-utilization"
+    Name = "${local.ecs_cluster_name}-cpu-utilization"
   })
 }
 
 resource "aws_cloudwatch_metric_alarm" "memory_utilization" {
-  alarm_name          = "${var.ecs_cluster_name}-memory-utilization"
+  alarm_name          = "${local.ecs_cluster_name}-memory-utilization"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "2"
   metric_name         = "MemoryUtilization"
@@ -174,21 +174,21 @@ resource "aws_cloudwatch_metric_alarm" "memory_utilization" {
   alarm_description  = "This metric monitors ECS memory utilization"
 
   dimensions = {
-    ClusterName = var.ecs_cluster_name
-    ServiceName = "${var.ecs_cluster_name}-service"
+    ClusterName = local.ecs_cluster_name
+    ServiceName = "${local.ecs_cluster_name}-service"
   }
 
   alarm_actions = [aws_sns_topic.alerts.arn]
   ok_actions    = [aws_sns_topic.alerts.arn]
 
   tags = merge(local.common_tags, {
-    Name = "${var.ecs_cluster_name}-memory-utilization"
+    Name = "${local.ecs_cluster_name}-memory-utilization"
   })
 }
 
 # CloudWatch Dashboard
 resource "aws_cloudwatch_dashboard" "main" {
-  dashboard_name = "${var.ecs_cluster_name}-dashboard"
+  dashboard_name = "${local.ecs_cluster_name}-dashboard"
 
   dashboard_body = jsonencode({
     widgets = [
@@ -201,7 +201,7 @@ resource "aws_cloudwatch_dashboard" "main" {
 
         properties = {
           metrics = [
-            ["AWS/ECS", "CPUUtilization", "ClusterName", var.ecs_cluster_name],
+            ["AWS/ECS", "CPUUtilization", "ClusterName", local.ecs_cluster_name],
             [".", "MemoryUtilization", ".", "."]
           ]
           period = 300

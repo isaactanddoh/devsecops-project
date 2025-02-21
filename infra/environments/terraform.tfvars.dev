@@ -7,6 +7,7 @@ subnet_cidrs = [
 availability_zones_count = 2  # Number of AZs to use
 allowed_cidr_blocks = ["0.0.0.0/0"]  # Should be restricted in prod
 alb_https_listener_port = 443
+container_port = 3000
 portfolio_domain_name = "portfolio.thekloudwiz.com"
 primary_domain_name = "thekloudwiz.com"
 github_org  = "thekloudwiz"
