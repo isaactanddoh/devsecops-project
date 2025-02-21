@@ -18,7 +18,7 @@ resource "aws_iam_openid_connect_provider" "github" {
 resource "aws_iam_role" "github_actions" {
   name = "github-actions-${terraform.workspace}"
   
-  assume_role_policy = templatefile("${path.root}/policies/github-oidc-assume-role-policy.json", {
+  assume_role_policy = templatefile("${path.root}/policies/assume-role-policy.json", {
     aws_oidc_arn = aws_iam_openid_connect_provider.github.arn
     github_org   = var.github_org
     github_repo  = var.github_repo
