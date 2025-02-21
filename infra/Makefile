@@ -7,11 +7,7 @@ test-opa:
 	@echo "Current workspace is: $$(terraform workspace show)"
 	@if [ -f "environments/terraform.tfvars.$$(terraform workspace show)" ]; then \
 		echo "Using tfvars file: environments/terraform.tfvars.$$(terraform workspace show)"; \
-		terraform init -backend=false && \
-		terraform plan \
-			-var-file="environments/terraform.tfvars.$$(terraform workspace show)" \
-			-lock=false \
-			-out=tfplan.binary || exit 1; \
+		terraform plan -var-file="environments/terraform.tfvars.$$(terraform workspace show)" -lock=false -out=tfplan.binary; \
 	else \
 		echo "Error: tfvars file not found for workspace $$(terraform workspace show)"; \
 		exit 1; \
