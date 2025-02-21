@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Check for terraform formatting
+terraform fmt -check -recursive
+if [ $? -ne 0 ]; then
+  echo "Error: Terraform files need formatting. Run 'terraform fmt -recursive'"
+  exit 1
+fi
+
+# Validate terraform configurations
+cd infra
+terraform init -backend=false
+terraform validate
+if [ $? -ne 0 ]; then
+  echo "Error: Terraform validation failed"
+  exit 1
+fi
+
+# Run checkov
+checkov -d . --quiet
+if [ $? -ne 0 ]; then
+  echo "Error: Security check failed"
+  exit 1
+fi 
