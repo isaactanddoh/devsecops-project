@@ -3,6 +3,8 @@ name: Terraform Validation Pipeline
 on:
   pull_request:
     branches: [ dev, staging, main ]
+  push:
+    branches: [ dev, staging, main ]
 
 permissions:
   id-token: write
@@ -14,73 +16,78 @@ defaults:
 
 jobs:
   validate:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     env:
       WORKSPACE: ${{ github.base_ref }}
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-      
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
-        
-    - name: Install Tools
-      run: |
-        pip install checkov
-        curl -L -o opa https://openpolicyagent.org/downloads/latest/opa_linux_amd64
-        chmod 755 ./opa
-        sudo mv opa /usr/local/bin/
+      - uses: actions/checkout@v4
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ secrets.IAM_ROLE }}
-        aws-region: eu-west-1
-        role-session-name: GitHubActionsCI
-    
-    - name: Terraform Init
-      run: terraform init
-    
-    - name: Select Workspace
-      run: |
-        WORKSPACE="${{ github.base_ref }}"
-        if [ "$WORKSPACE" = "main" ]; then
-          WORKSPACE="prod"
-        fi
-        terraform workspace select "$WORKSPACE" || terraform workspace new "$WORKSPACE"
-    
-    - name: Terraform Format
-      run: terraform fmt -check -recursive
-    
-    - name: Terraform Validate
-      run: terraform validate
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
-    - name: Run Checkov Tests
-      run: checkov -d . --quiet
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
 
-    - name: Run OPA Tests
-      run: |
-        echo "Running OPA tests..."
-        if ! make test-opa 2>&1 | tee opa_output.log; then
-          echo "OPA test failed. Full output:"
-          cat opa_output.log
-          echo "::error::OPA policy violations found"
-          exit 1
-        fi
+      - name: Install Tools
+        run: |
+          pip install checkov
+          curl -L -o opa https://openpolicyagent.org/downloads/latest/opa_linux_amd64
+          chmod 755 ./opa
+          sudo mv opa /usr/local/bin/
 
-    - name: Terraform Plan
-      run: terraform plan -var-file="environments/terraform.tfvars.$WORKSPACE" -detailed-exitcode
+      - name: Configure AWS Credentials for Tests
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.IAM_ROLE }}
+          aws-region: eu-west-1
+          role-session-name: GitHubActions
 
-    - name: Notify Slack
-      if: always()
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-        text: "Validation for ${{ github.base_ref }} environment ${{ job.status }}!"
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} 
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Select Workspace
+        run: terraform workspace new $WORKSPACE || terraform workspace select $WORKSPACE
+
+      - name: Terraform Format
+        run: |
+          echo "Formatting Terraform files..."
+          terraform fmt -recursive
+          echo "Checking if files are properly formatted..."
+          terraform fmt -check -recursive || {
+            echo "::error::Some files are not properly formatted. The format command has fixed them. Please commit the changes.";
+            git diff;
+            exit 1;
+          }
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Run Checkov Tests
+        run: checkov -d . --quiet
+
+      - name: Security Checks
+        run: |
+          checkov -d . --quiet
+          echo "Running OPA tests..."
+          if ! make test-opa 2>&1 | tee opa_output.log; then
+            echo "OPA test failed. Full output:"
+            cat opa_output.log
+            echo "::error::OPA policy violations found"
+            exit 1
+          fi
+
+      - name: Run Terraform Test
+        run: terraform test -var-file="environments/terraform.tfvars.$WORKSPACE"
+
+      - name: Notify Slack
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          text: "Validation for ${{ github.base_ref }} environment ${{ job.status }}!"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
