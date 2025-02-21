@@ -9,7 +9,7 @@
       "Action": "sts:AssumeRoleWithWebIdentity",
       "Condition": {
         "StringLike": {
-          "token.actions.githubusercontent.com:sub": "repo:${github_org}/${github_repo}:*"
+          "token.actions.githubusercontent.com:sub": "repo:${owner}/${github_repo}:*"
         }
       }
     }

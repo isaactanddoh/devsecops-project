@@ -17,4 +17,4 @@ flow_logs_retention_days = 14  # Keep logs for 2 weeks in staging
 cost_center = "staging"
 container_user = "1000:1000"
 project_name = "secure-ci-cd"
-owner = "thekloudwiz"
+owner = "isaactanddoh"
