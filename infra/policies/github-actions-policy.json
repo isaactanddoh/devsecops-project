@@ -12,12 +12,14 @@
         "ecr:ListImages",
         "ecr:DescribeImages",
         "ecr:BatchGetImage",
-        "ecr:InitiateLayerUpload",
+        "ecr:InitiateLayerPart",
         "ecr:UploadLayerPart",
         "ecr:CompleteLayerUpload",
         "ecr:PutImage",
         "sts:AssumeRole",
-        "sts:TagSession"
+        "sts:TagSession",
+        "sts:AssumeRoleWithWebIdentity",
+        "sts:GetCallerIdentity"
       ],
       "Resource": "*"
     }
