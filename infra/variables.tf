@@ -88,11 +88,11 @@ variable "alb_security_group_name" {
   type        = string
 }
 
-# ALB Listener Port
-variable "alb_listener_port" {
-  description = "Port for ALB listener"
-  type        = number
-}
+# # ALB Listener Port
+# variable "alb_listener_port" {
+#   description = "Port for ALB listener"
+#   type        = number
+# }
 
 # Target Group Port
 variable "target_group_port" {

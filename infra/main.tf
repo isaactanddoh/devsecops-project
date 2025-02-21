@@ -29,7 +29,6 @@ module "load_balancer" {
   source                  = "./modules/03load-balancer"
   aws_region              = var.aws_region
   alb_name                = var.alb_name
-  alb_listener_port       = var.alb_listener_port
   alb_target_group_name   = var.alb_target_group_name
   health_check_path       = var.health_check_path
   container_port          = var.container_port

@@ -19,10 +19,10 @@ variable "waf_scope" {
   type        = string
 }
 
-variable "alb_listener_port" {
-  description = "Port for ALB listener"
-  type        = number
-}
+# variable "alb_listener_port" {
+#   description = "Port for ALB listener"
+#   type        = number
+# }
 
 variable "alb_target_group_name" {
   description = "Target Group for ECS tasks"
