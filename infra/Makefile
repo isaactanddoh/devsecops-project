@@ -4,7 +4,7 @@ test-all: test-opa
 
 test-opa:
 	@echo "Running OPA policy checks..."
-	@echo "Current workspace: $$(terraform workspace show)"
+	@echo "Current workspace is: $$(terraform workspace show)"
 	@if [ -f "environments/terraform.tfvars.$$(terraform workspace show)" ]; then \
 		echo "Using tfvars file: environments/terraform.tfvars.$$(terraform workspace show)"; \
 		terraform plan -var-file="environments/terraform.tfvars.$$(terraform workspace show)" -lock=false -out=tfplan.binary; \
