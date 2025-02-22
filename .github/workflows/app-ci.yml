@@ -79,7 +79,7 @@ jobs:
         with:
           project: 'portfolio-app'
           path: 'app'
-          format: 'html'
+          format: 'HTML'
           out: 'reports'  # Specify output directory
 
       - name: Run Integration Tests
