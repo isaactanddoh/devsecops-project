@@ -102,13 +102,9 @@ jobs:
 
       - name: Debug Report Path
         run: |
-          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-          echo "HOME Directory: $HOME"
-          echo "Present Working Directory: $(pwd)"
-          echo "Contents of Working Directory:"
-          ls -R $(pwd)
-          echo "Contents of GitHub Workspace:"
-          ls -R $GITHUB_WORKSPACE
+          ls /github/workspace
+          find /github/workspace -type f -name "dependency-check-report.html"
+
 
       # - name: Upload Reports to S3
       #   run: |
