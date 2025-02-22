@@ -1,3 +1,18 @@
+# null resource to handle replication and object removal when destroying
+resource "null_resource" "remove_replication" {
+  triggers = {
+    bucket_id = aws_s3_bucket.terraform_state_replica.id
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<EOF
+    aws s3api delete-bucket-replication --bucket ${self.triggers.bucket_id}
+    aws s3 rm s3://${self.triggers.bucket_id} --recursive
+    EOF
+  }
+}
+
 # Create replication bucket in secondary region
 resource "aws_s3_bucket" "terraform_state_replica" {
   provider = aws.secondary

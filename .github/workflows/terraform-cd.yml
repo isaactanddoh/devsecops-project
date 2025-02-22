@@ -4,8 +4,13 @@ on:
   push:
     branches: [ dev, staging, main ]
     paths:
-        - infra/**'
-        - '.github/workflows/terraform-cd.yml'
+      - 'infra/**/*.tf'
+      - 'infra/**/*.tfvars.*'
+      - '.github/workflows/terraform-cd.yml'
+    paths-ignore:
+      - '**/.github/dependabot.yml'
+      - '**/README.md'
+
   workflow_dispatch:
     inputs:
       destroy:

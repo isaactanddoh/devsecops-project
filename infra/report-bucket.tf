@@ -1,3 +1,18 @@
+# null resource to handle replication and objectremoval when destroying
+resource "null_resource" "remove_replication" {
+  triggers = {
+    bucket_id = aws_s3_bucket.security_reports.id
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<EOF
+    aws s3api delete-bucket-replication --bucket ${self.triggers.bucket_id}
+    aws s3 rm s3://${self.triggers.bucket_id} --recursive
+    EOF
+  }
+}
+
 # KMS key for bucket encryption
 resource "aws_kms_key" "report_bucket_key" {
   description             = "KMS key for security reports bucket encryption"
@@ -29,6 +44,12 @@ resource "aws_s3_bucket" "security_reports" {
     Environment = var.environment
     Project     = var.project_name
     Owner       = var.owner
+  }
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
   }
 
   #checkov:skip=CKV2_AWS_62: "Ensure S3 buckets should have event notifications enabled"
