@@ -29,12 +29,12 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: 'app/package-lock.json'  # Specify the path
+          cache-dependency-path: '**/package-lock.json'
           
       - name: Install dependencies
         run: |
-          npm install
-          npm ci
+          cd app
+          npm ci  # Remove npm install as npm ci is sufficient
         
       - name: Run npm audit
         run: |
@@ -47,22 +47,12 @@ jobs:
           fi
         
       - name: Run SAST with SonarCloud
-        uses: SonarSource/sonarqube-scan-action@v1
-        with:
-          args: >
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-            -Dsonar.sources=app/src
-            -Dsonar.tests=app/tests
-            -Dsonar.javascript.lcov.reportPaths=app/coverage/lcov.info
-            -Dsonar.qualitygate.wait=true
-            -Dsonar.scm.provider=git
-            -Dsonar.sourceEncoding=UTF-8
-            -Dsonar.exclusions=**/node_modules/**,**/coverage/**
-            -Dsonar.analysis.mode=publish
+        uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: app
           
       - name: Run Snyk Security Scan
         uses: snyk/actions/node@master
