@@ -102,8 +102,11 @@ jobs:
 
       - name: Debug Report Path
         run: |
-          ls /github/workspace
-          find /github/workspace -type f -name "dependency-check-report.html"
+          echo "Searching for dependency-check-report.html..."e
+          find / -type f -name "dependency-check-report.html" 2>/dev/null
+          echo "Searching for coverage directory..."
+          find / -type d -name "coverage" 2>/dev/null
+
 
 
       # - name: Upload Reports to S3
