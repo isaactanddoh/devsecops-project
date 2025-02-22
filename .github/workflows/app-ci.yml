@@ -29,12 +29,12 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          # cache-dependency-path: '**/package-lock.json'
           
       - name: Install dependencies
         run: |
-          cd app
-          npm ci  # Remove npm install as npm ci is sufficient
+          npm install
+          npm ci
         
       - name: Run npm audit
         run: |
