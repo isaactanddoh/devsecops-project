@@ -97,7 +97,12 @@ variable "github_org" {
 }
 
 # GitHub Repository Name
-variable "github_repo" {
+variable "infra_repo" {
+  description = "GitHub repository name"
+  type        = string
+}
+
+variable "app_repo" {
   description = "GitHub repository name"
   type        = string
 }

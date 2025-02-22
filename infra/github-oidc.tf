@@ -21,7 +21,8 @@ resource "aws_iam_role" "github_actions" {
   assume_role_policy = templatefile("${path.root}/policies/assume-role-policy.json", {
     github_provider_arn = aws_iam_openid_connect_provider.github.arn
     owner              = var.owner
-    github_repo        = var.github_repo
+    infra_repo        = var.infra_repo
+    app_repo        = var.app_repo
   })
 
   tags = merge(local.common_tags, {

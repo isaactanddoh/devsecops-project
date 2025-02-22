@@ -13,10 +13,14 @@
         },
         "StringLike": {
           "token.actions.githubusercontent.com:sub": [
-            "repo:${owner}/${github_repo}:*",
-            "repo:${owner}/${github_repo}:ref:refs/heads/*",
-            "repo:${owner}/${github_repo}:pull_request",
-            "repo:${owner}/${github_repo}:environment:*"
+            "repo:${owner}/${infra_repo}:*",
+            "repo:${owner}/${infra_repo}:ref:refs/heads/*",
+            "repo:${owner}/${infra_repo}:pull_request",
+            "repo:${owner}/${infra_repo}:environment:*",
+            "repo:${owner}/${app_repo}:*",
+            "repo:${owner}/${app_repo}:ref:refs/heads/*",
+            "repo:${owner}/${app_repo}:pull_request",
+            "repo:${owner}/${app_repo}:environment:*"
           ]
         }
       }
