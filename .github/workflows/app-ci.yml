@@ -102,10 +102,15 @@ jobs:
 
       - name: Debug Report Path
         run: |
-          echo "Searching for dependency-check-report.html..."e
+          echo "Searching for dependency-check-report.html..."
           find / -type f -name "dependency-check-report.html" 2>/dev/null
           echo "Searching for coverage directory..."
           find / -type d -name "coverage" 2>/dev/null
+          echo "Searching for trivy-results.sarif..."
+          find / -type f -name "trivy-results.sarif" 2>/dev/null
+          echo "Github workspace:"
+          echo ${{ github.workspace }}
+
 
 
 
