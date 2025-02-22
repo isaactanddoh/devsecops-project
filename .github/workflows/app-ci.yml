@@ -72,7 +72,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --file=app/package.json --all-projects
+          args: --file=app/package.json
           
       - name: Run OWASP Dependency Check
         uses: dependency-check/Dependency-Check_Action@main
