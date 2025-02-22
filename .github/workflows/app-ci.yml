@@ -47,7 +47,19 @@ jobs:
           fi
         
       - name: Run SAST with SonarCloud
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v1
+        with:
+          args: >
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.sources=app/src
+            -Dsonar.tests=app/tests
+            -Dsonar.javascript.lcov.reportPaths=app/coverage/lcov.info
+            -Dsonar.qualitygate.wait=true
+            -Dsonar.scm.provider=git
+            -Dsonar.sourceEncoding=UTF-8
+            -Dsonar.exclusions=**/node_modules/**,**/coverage/**
+            -Dsonar.analysis.mode=publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
