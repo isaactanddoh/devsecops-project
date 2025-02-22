@@ -3,7 +3,9 @@ name: Terraform Deployment Pipeline
 on:
   push:
     branches: [ dev, staging, main ]
-
+    paths:
+        - infra/**'
+        - '.github/workflows/terraform-cd.yml'
   workflow_dispatch:
     inputs:
       destroy:

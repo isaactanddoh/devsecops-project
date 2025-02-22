@@ -5,6 +5,9 @@ on:
     branches: [ dev, staging, main ]
   push:
     branches: [ dev, staging, main ]
+    paths:
+        - infra/**'
+        - '.github/workflows/terraform-ci.yml'
 
 
 permissions:
