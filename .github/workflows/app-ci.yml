@@ -55,8 +55,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
         with:
           projectBaseDir: app
           args: >
@@ -67,6 +65,7 @@ jobs:
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/public/**
             -Dsonar.coverage.exclusions=**/public/**
+            -Dsonar.verbose=true
         
       - name: Run Snyk Security Scan
         uses: snyk/actions/node@master
