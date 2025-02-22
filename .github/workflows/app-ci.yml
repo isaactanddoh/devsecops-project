@@ -91,9 +91,7 @@ jobs:
           name: security-reports
           path: |
             npm-audit-report.json
-            trivy-results.sarif
-        
-      
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -104,7 +102,6 @@ jobs:
         run: |
           REPORT_DIR="reports/${{ github.repository }}/${{ github.ref_name }}/${{ github.sha }}"
           aws s3 cp ${{ github.workspace }}/reports/dependency-check-report.html "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/"
-          aws s3 cp trivy-results.sarif "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/"
           aws s3 cp coverage/ "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/coverage" --recursive
 
       - name: Notify Slack
@@ -119,5 +116,3 @@ jobs:
             Reports: s3://${{ secrets.REPORTS_BUCKET }}/${{ github.repository }}/${{ github.ref_name }}/${{ github.sha }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-

@@ -50,7 +50,7 @@ jobs:
           load: true
           tags: ${{ steps.tags.outputs.tags }}
           
-      - name: Scan Image
+      - name: Scan Image with Trivy
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ steps.tags.outputs.tags }}
@@ -59,6 +59,19 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+      
+      - name: Upload Trivy Results to S3
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-results
+          path: trivy-results.json
+        
+        
+      - name: Upload Trivy Results to S3
+        run: |
+          REPORT_DIR="reports/${{ github.repository }}/${{ github.ref_name }}/${{ github.sha }}"
+          aws s3 cp trivy-results.json "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/"
+
           
       - name: Push Image
         run: docker push ${{ steps.tags.outputs.tags }}
