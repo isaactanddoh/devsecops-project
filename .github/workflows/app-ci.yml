@@ -89,10 +89,11 @@ jobs:
         with:
           name: security-reports
           path: |
-            npm-audit-report.json
+            app/npm-audit-report.json
+            app/dependency-check-report.html
+            app/coverage/**
             trivy-results.sarif
-        
-      
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -102,8 +103,30 @@ jobs:
       - name: Upload Reports to S3
         run: |
           REPORT_DIR="reports/${{ github.repository }}/${{ github.ref_name }}/${{ github.sha }}"
-          aws s3 cp dependency-check-report.html "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/"
-          aws s3 cp coverage/. "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/coverage" --recursive
+          
+          # Create reports directory if it doesn't exist
+          mkdir -p reports
+          
+          # Copy all reports to a single directory
+          cp app/npm-audit-report.json reports/ || true
+          cp app/dependency-check-report.html reports/ || true
+          cp -r app/coverage reports/ || true
+          cp trivy-results.sarif reports/ || true
+          
+          # Upload all reports to S3
+          aws s3 cp reports/. "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/" --recursive
+          
+          # Generate and upload report index
+          echo "Security Reports for ${{ github.repository }} - ${{ github.sha }}" > reports/index.html
+          echo "Generated on $(date)" >> reports/index.html
+          echo "<ul>" >> reports/index.html
+          echo "<li><a href='npm-audit-report.json'>NPM Audit Report</a></li>" >> reports/index.html
+          echo "<li><a href='dependency-check-report.html'>OWASP Dependency Check Report</a></li>" >> reports/index.html
+          echo "<li><a href='coverage/lcov-report/index.html'>Test Coverage Report</a></li>" >> reports/index.html
+          echo "<li><a href='trivy-results.sarif'>Trivy Scan Results</a></li>" >> reports/index.html
+          echo "</ul>" >> reports/index.html
+          
+          aws s3 cp reports/index.html "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/index.html"
 
       - name: Notify Slack
         if: always()
