@@ -99,12 +99,18 @@ jobs:
         with:
           role-to-assume: ${{ secrets.IAM_ROLE }}
           aws-region: eu-west-1
-          
-      - name: Upload Reports to S3
+
+      - name: Debug Report Path
         run: |
-          REPORT_DIR="reports/${{ github.repository }}/${{ github.ref_name }}/${{ github.sha }}"
-          aws s3 cp reports/dependency-check-report.html "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/"
-          aws s3 cp coverage/. "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/coverage" --recursive
+          ls -R
+          tree
+          echo "Current working directory: $(pwd)"
+
+      # - name: Upload Reports to S3
+      #   run: |
+      #     REPORT_DIR="reports/${{ github.repository }}/${{ github.ref_name }}/${{ github.sha }}"
+      #     aws s3 cp "$(pwd)/reports/dependency-check-report.html" "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/"
+      #     aws s3 cp "$(pwd)/coverage/" "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/coverage" --recursive
 
       - name: Notify Slack
         if: always()
