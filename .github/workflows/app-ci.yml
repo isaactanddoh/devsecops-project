@@ -1,0 +1,97 @@
+name: Application CI Pipeline
+
+on:
+  pull_request:
+    branches: [ dev, staging, main ]
+    paths:
+      - 'app/**'
+      - '.github/workflows/app-ci.yml'
+      - 'package*.json'
+      - 'Dockerfile'
+      - '!infra/**'  # Exclude infra changes
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  security-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run npm audit
+        run: |
+          npm audit --json > npm-audit-report.json || true
+          npm audit fix --audit-level=critical --force
+          if [ $(jq '.vulnerabilities | length' npm-audit-report.json) -gt 0 ]; then
+            echo "Critical vulnerabilities found:"
+            jq '.vulnerabilities[] | select(.severity=="critical")' npm-audit-report.json
+            exit 1
+          fi
+        
+      - name: Run SAST with SonarCloud
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          
+      - name: Run Snyk Security Scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          
+      - name: Run OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'portfolio-app'
+          path: '.'
+          format: 'HTML'
+          
+      - name: Run Integration Tests
+        run: npm run test:integration
+
+      - name: Upload Security Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-reports
+          path: |
+            npm-audit-report.json
+            trivy-results.sarif
+        
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.IAM_ROLE }}
+          aws-region: eu-west-1
+          
+      - name: Upload Reports to S3
+        run: |
+          REPORT_DIR="reports/${{ github.repository }}/${{ github.ref_name }}/${{ github.sha }}"
+          aws s3 cp dependency-check-report.html "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/"
+          aws s3 cp coverage/. "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/coverage" --recursive
+
+      - name: Notify Slack
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          text: |
+            Security Scan for PR #${{ github.event.pull_request.number }} ${{ job.status }}!
+            Branch: ${{ github.head_ref }}
+            Reports: s3://${{ secrets.REPORTS_BUCKET }}/${{ github.repository }}/${{ github.ref_name }}/${{ github.sha }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
