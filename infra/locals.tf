@@ -1,6 +1,7 @@
 locals {
   # Naming convention for resources
   name_prefix = "isaac-${terraform.workspace}"
+  github_actions_name = "thekloudwiz-gha-role"
 
   bucket_name = "isaac-tfstate"
 

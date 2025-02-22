@@ -6,20 +6,14 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    open-pull-requests-limit: 5
     labels:
       - "github-actions"
       - "dependencies"
     commit-message:
       prefix: "github-actions"
       include: "scope"
-    target-branch: "dev"
-    # Auto-merge configuration
-    auto-merge: true
-    auto-merge-conditions:
-      - "status-success=test"
-      - "status-success=build"
-    version-requirement-updates: "increase"
+
+
 
   # Terraform dependencies updates
   - package-ecosystem: "terraform"
@@ -27,17 +21,9 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    open-pull-requests-limit: 5
     labels:
       - "terraform"
       - "dependencies"
     commit-message:
       prefix: "terraform"
       include: "scope" 
-    target-branch: "dev"
-    # Auto-merge configuration
-    auto-merge: true
-    auto-merge-conditions:
-      - "status-success=test"
-      - "status-success=build"
-    version-requirement-updates: "increase"

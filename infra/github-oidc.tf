@@ -16,7 +16,7 @@ resource "aws_iam_openid_connect_provider" "github" {
 
 # Create IAM Role for GitHub Actions
 resource "aws_iam_role" "github_actions" {
-  name = "github-actions-${terraform.workspace}"
+  name = local.github_actions_name
   
   assume_role_policy = templatefile("${path.root}/policies/assume-role-policy.json", {
     github_provider_arn = aws_iam_openid_connect_provider.github.arn
@@ -26,7 +26,7 @@ resource "aws_iam_role" "github_actions" {
   })
 
   tags = merge(local.common_tags, {
-    Name = "github-actions-${terraform.workspace}"
+    Name = local.github_actions_name
   })
 }
 
