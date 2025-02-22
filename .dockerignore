@@ -1,0 +1,64 @@
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Node.js
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Environment files
+.env
+.env.*
+*.env
+
+# Development files
+.editorconfig
+.eslintrc
+.prettierrc
+*.test.js
+*.spec.js
+coverage/
+.nyc_output/
+
+# Build artifacts
+dist/
+build/
+*.log
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Documentation
+docs/
+*.md
+LICENSE
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*
+
+# Terraform
+infra/
+*.tf
+.terraform/
+
+# Misc
+*.zip
+*.tar.gz
+tmp/
+temp/ 

@@ -68,9 +68,8 @@ jobs:
       - name: Run Checkov Tests
         run: checkov -d . --quiet
 
-      - name: Security Checks
+      - name: Run OPA Checks
         run: |
-          checkov -d . --quiet
           echo "Running OPA tests..."
           if ! make test-opa 2>&1 | tee opa_output.log; then
             echo "OPA test failed. Full output:"

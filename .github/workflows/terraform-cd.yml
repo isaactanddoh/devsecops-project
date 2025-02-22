@@ -3,6 +3,19 @@ name: Terraform Deployment Pipeline
 on:
   push:
     branches: [ dev, staging, main ]
+    paths:
+      - 'infra/**'
+      - '.github/workflows/terraform-cd.yml'
+      - '!app/**'  # Exclude app changes
+      - '!package*.json'
+      - '!Dockerfile'
+  workflow_dispatch:
+    inputs:
+      destroy:
+        description: 'Destroy infrastructure'
+        type: boolean
+        required: true
+        default: false
 
 permissions:
   id-token: write
@@ -146,4 +159,44 @@ jobs:
         fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
         text: "Production Infrastructure Deployment ${{ job.status }}!"
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} 
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  destroy:
+    if: github.event_name == 'workflow_dispatch' && inputs.destroy == true
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref_name }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.IAM_ROLE }}
+          aws-region: eu-west-1
+      
+      - name: Terraform Init
+        run: terraform init
+        working-directory: infra
+      
+      - name: Select Workspace
+        run: terraform workspace select ${{ github.ref_name }}
+        working-directory: infra
+      
+      - name: Terraform Destroy
+        run: terraform destroy -var-file="environments/terraform.tfvars.${{ github.ref_name }}" -auto-approve
+        working-directory: infra
+
+      - name: Notify Slack
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          text: "Infrastructure Destruction in ${{ github.ref_name }} environment ${{ job.status }}!"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} 
