@@ -5,12 +5,7 @@ on:
     branches: [ dev, staging, main ]
   push:
     branches: [ dev, staging, main ]
-    paths:
-      - 'infra/**'
-      - '.github/workflows/terraform-ci.yml'
-      - '!app/**'  # Exclude app changes
-      - '!package*.json'
-      - '!Dockerfile'
+
 
 permissions:
   id-token: write
