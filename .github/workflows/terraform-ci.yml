@@ -8,8 +8,9 @@ on:
       - 'infra/**/*.tfvars.*'
       - '.github/workflows/terraform-ci.yml'
     paths-ignore:
-      - '**/.github/dependabot.yml'
+      - '.github/dependabot.yml'
       - '**/README.md'
+      - '.gitignore'
 
 permissions:
   id-token: write

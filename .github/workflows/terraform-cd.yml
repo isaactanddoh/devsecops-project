@@ -8,8 +8,9 @@ on:
       - 'infra/**/*.tfvars.*'
       - '.github/workflows/terraform-cd.yml'
     paths-ignore:
-      - '**/.github/dependabot.yml'
+      - '.github/dependabot.yml'
       - '**/README.md'
+      - '.gitignore'
 
   workflow_dispatch:
     inputs:
