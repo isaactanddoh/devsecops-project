@@ -32,3 +32,6 @@ app.use((req, res) => {
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
+// Export the app for testing
+module.exports = app;

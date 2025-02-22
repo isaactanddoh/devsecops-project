@@ -45,6 +45,10 @@ jobs:
             exit 1
           fi
         
+      - name: Run Tests with Coverage
+        run: |
+          npm run test:coverage
+        
       - name: Run SAST with SonarCloud
         uses: SonarSource/sonarqube-scan-action@v4
         env:
@@ -58,6 +62,7 @@ jobs:
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.sources=src
+            -Dsonar.tests=tests
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/public/**
             -Dsonar.coverage.exclusions=**/public/**
@@ -66,6 +71,8 @@ jobs:
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --file=app/package.json --all-projects
           
       - name: Run OWASP Dependency Check
         uses: dependency-check/Dependency-Check_Action@main
