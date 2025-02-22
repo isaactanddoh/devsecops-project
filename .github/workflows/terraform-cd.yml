@@ -3,12 +3,7 @@ name: Terraform Deployment Pipeline
 on:
   push:
     branches: [ dev, staging, main ]
-    paths:
-      - 'infra/**'
-      - '.github/workflows/terraform-cd.yml'
-      - '!app/**'  # Exclude app changes
-      - '!package*.json'
-      - '!Dockerfile'
+
   workflow_dispatch:
     inputs:
       destroy:
