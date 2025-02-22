@@ -90,11 +90,8 @@ jobs:
         with:
           name: security-reports
           path: |
-            npm-audit-report.json
-
-      - name: Search for npm audit report file
-        run: |
-          find . -name "npm-audit-report.json"
+            ${{ github.workspace }}/app/npm-audit-report.json
+            ${{ github.workspace }}/reports/dependency-check-report.html
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -102,10 +99,11 @@ jobs:
           role-to-assume: ${{ secrets.IAM_ROLE }}
           aws-region: eu-west-1
 
-      # - name: Upload Reports to S3
-      #   run: |
-      #     REPORT_DIR="reports/${{ github.repository }}/${{ github.ref_name }}/${{ github.sha }}"
-      #     aws s3 cp ${{ github.workspace }}/reports/dependency-check-report.html "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/"
+      - name: Upload Reports to S3
+        run: |
+          REPORT_DIR="reports/${{ github.repository }}/${{ github.ref_name }}/${{ github.sha }}"
+          aws s3 cp ${{ github.workspace }}/app/npm-audit-report.json "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/"
+          aws s3 cp ${{ github.workspace }}/reports/dependency-check-report.html "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/"
 
       - name: Notify Slack
         if: always()
