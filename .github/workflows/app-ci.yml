@@ -57,9 +57,10 @@ jobs:
           args: >
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-            -Dsonar.sources=app/src
-            -Dsonar.tests=app/tests
-            -Dsonar.javascript.lcov.reportPaths=app/coverage/lcov.info
+            -Dsonar.sources=src
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/public/**
+            -Dsonar.coverage.exclusions=**/public/**
         
       - name: Run Snyk Security Scan
         uses: snyk/actions/node@master
