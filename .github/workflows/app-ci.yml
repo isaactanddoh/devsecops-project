@@ -17,6 +17,10 @@ permissions:
 jobs:
   security-checks:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app  # Set the working directory to app folder
+    
     steps:
       - uses: actions/checkout@v4
       
@@ -25,9 +29,12 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: 'app/package-lock.json'  # Specify the path
           
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm install
+          npm ci
         
       - name: Run npm audit
         run: |
