@@ -100,23 +100,12 @@ jobs:
           role-to-assume: ${{ secrets.IAM_ROLE }}
           aws-region: eu-west-1
 
-      - name: Debug Report Path
+      - name: Upload Reports to S3
         run: |
-          echo "Github workspace:"
-          echo ${{ github.workspace }}
-          echo "Current working directory:"
-          echo $(pwd)
-
-
-
-
-
-      # - name: Upload Reports to S3
-      #   run: |
-      #     REPORT_DIR="reports/${{ github.repository }}/${{ github.ref_name }}/${{ github.sha }}"
-      #     aws s3 cp ${{ github.workspace }}/reports/dependency-check-report.html "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/"
-      #     aws s3 cp trivy-results.sarif "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/"
-      #     aws s3 cp coverage/ "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/coverage" --recursive
+          REPORT_DIR="reports/${{ github.repository }}/${{ github.ref_name }}/${{ github.sha }}"
+          aws s3 cp ${{ github.workspace }}/reports/dependency-check-report.html "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/"
+          aws s3 cp trivy-results.sarif "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/"
+          aws s3 cp coverage/ "s3://${{ secrets.REPORTS_BUCKET }}/$REPORT_DIR/coverage" --recursive
 
       - name: Notify Slack
         if: always()
