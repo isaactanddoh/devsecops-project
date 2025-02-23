@@ -1,5 +1,5 @@
 # null resource to handle replication and object removal when destroying
-resource "null_resource" "remove_replication" {
+resource "null_resource" "remove_replica_replication" {
   triggers = {
     bucket_id = aws_s3_bucket.terraform_state_replica.id
   }
