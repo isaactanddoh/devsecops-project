@@ -4,11 +4,22 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
 
   # Terraform dependencies updates
   - package-ecosystem: "terraform"
     directory: "/infra"
     schedule:
-      interval: "weekly"
+      interval: "daily"
+    registries:
+      - terraform-providers
+      - terraform-modules
 
+registries:
+  terraform-providers:
+    type: terraform-registry
+    url: "https://registry.terraform.io"
+
+  terraform-modules:
+    type: terraform-registry
+    url: "https://registry.terraform.io"
