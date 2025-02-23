@@ -3,10 +3,7 @@ name: Terraform Deployment Pipeline
 on:
   push:
     branches: [ dev, staging, main ]
-    paths:
-      - infra/**/*.tf
-      - infra/**/*.tfvars.*
-      - .github/workflows/terraform-cd.yml
+
     paths-ignore:
       - .github/dependabot.yml
       -  README.md
