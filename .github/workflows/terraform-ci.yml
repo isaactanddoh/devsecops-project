@@ -4,13 +4,13 @@ on:
   pull_request:
     branches: [ dev, staging, main ]
     paths:
-      - 'infra/**/*.tf'
-      - 'infra/**/*.tfvars.*'
-      - '.github/workflows/terraform-ci.yml'
+      - infra/**/*.tf
+      - infra/**/*.tfvars.*
+      - .github/workflows/terraform-ci.yml
     paths-ignore:
-      - '.github/dependabot.yml'
-      - '**/README.md'
-      - '.gitignore'
+      - .github/dependabot.yml
+      -  README.md
+      - .gitignore
 
 permissions:
   id-token: write
