@@ -1,5 +1,5 @@
 # null resource to handle replication and objectremoval when destroying
-resource "null_resource" "remove_replication" {
+resource "null_resource" "remove_report_replication" {
   triggers = {
     bucket_id = aws_s3_bucket.security_reports.id
   }

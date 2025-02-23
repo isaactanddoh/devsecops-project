@@ -3,11 +3,11 @@ name: Terraform Deployment Pipeline
 on:
   push:
     branches: [ dev, staging, main ]
-
-    paths-ignore:
-      - .github/dependabot.yml
-      -  README.md
-      - .gitignore
+    paths:
+      - infra/**
+      - infra/**/*.tfvars.*
+      - .github/workflows/terraform-cd.yml
+      - '!.github/dependabot.yml'
 
   workflow_dispatch:
     inputs:

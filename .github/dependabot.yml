@@ -5,25 +5,10 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "monday"
-    labels:
-      - "github-actions"
-      - "dependencies"
-    commit-message:
-      prefix: "github-actions"
-      include: "scope"
-
-
 
   # Terraform dependencies updates
   - package-ecosystem: "terraform"
     directory: "/infra"
     schedule:
       interval: "weekly"
-      day: "monday"
-    labels:
-      - "terraform"
-      - "dependencies"
-    commit-message:
-      prefix: "terraform"
-      include: "scope" 
+
