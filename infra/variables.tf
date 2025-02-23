@@ -144,6 +144,13 @@ variable "environment" {
   default     = "security-reports"
 }
 
+# environment for report bucket
+variable "report_bucket_environment" {
+  description = "The environment for the report bucket"
+  type        = string
+  default     = "security-reports"
+}
+
 # Timestamp
 variable "timestamp" {
   description = "The timestamp for the project"

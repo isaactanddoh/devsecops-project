@@ -37,11 +37,11 @@ resource "aws_kms_alias" "report_bucket_key_alias" {
 
 # S3 Bucket for security reports
 resource "aws_s3_bucket" "security_reports" {
-  bucket = "${var.environment}-bucket-${var.timestamp}"
+  bucket = "${var.report_bucket_environment}-bucket-${var.timestamp}"
 
   tags = {
-    Name        = "${var.environment}-bucket-${var.timestamp}"
-    Environment = var.environment
+    Name        = "${var.report_bucket_environment}-bucket-${var.timestamp}"
+    Environment = var.report_bucket_environment
     Project     = var.project_name
     Owner       = var.owner
   }
