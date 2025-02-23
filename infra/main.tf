@@ -54,7 +54,6 @@ module "monitoring" {
   log_retention_days       = lookup(local.workspace_config[terraform.workspace], "log_retention_days", 30)
   flow_logs_retention_days = lookup(local.workspace_config[terraform.workspace], "flow_logs_retention_days", 30)
   cpu_threshold            = lookup(local.workspace_config[terraform.workspace], "cpu_threshold", 80)
-  memory_threshold         = lookup(local.workspace_config[terraform.workspace], "memory_threshold", 80)
   api_latency_threshold    = lookup(local.workspace_config[terraform.workspace], "api_latency_threshold", 1)
 
   depends_on = [module.load_balancer, module.security, module.networking]
@@ -74,5 +73,6 @@ module "compute" {
   vpc_id                = module.networking.vpc_id
   subnet_ids            = module.networking.private_subnet_ids
   ecs_security_group_id = module.networking.ecs_security_group_id
+  memory_threshold         = lookup(local.workspace_config[terraform.workspace], "memory_threshold", 80)
   depends_on            = [module.load_balancer, module.monitoring]
 }

@@ -1,0 +1,137 @@
+name: Security Incident Report
+description: Template for reporting security incidents
+title: "SEC-INC-[DATE]-[NUMBER]"
+labels: ["security", "incident"]
+assignees:
+  - security-team
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Security Incident Report
+        Please provide detailed information about the security incident.
+        This will help us respond effectively and prevent future occurrences.
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity Level
+      description: How severe is this security incident?
+      options:
+        - Critical - Service/Data Impact
+        - High - Major Disruption
+        - Medium - Limited Impact
+        - Low - Minimal Impact
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Incident Category
+      description: What type of security incident is this?
+      options:
+        - Infrastructure Security
+        - Application Security
+        - Container Security
+        - Access Control
+        - Data Security
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: discovery-date
+    attributes:
+      label: Discovery Date/Time
+      description: When was the incident discovered?
+      placeholder: YYYY-MM-DD HH:MM UTC
+    validations:
+      required: true
+
+  - type: input
+    id: reporter
+    attributes:
+      label: Reported By
+      description: Who discovered/reported this incident?
+      placeholder: Name/Team
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Incident Description
+      description: Provide a detailed description of the security incident
+      placeholder: |
+        - What happened?
+        - How was it discovered?
+        - What systems are affected?
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact Assessment
+      description: What is the current and potential impact?
+      placeholder: |
+        - Systems affected
+        - Service disruption
+        - Data compromise
+        - Customer impact
+    validations:
+      required: true
+
+  - type: textarea
+    id: actions-taken
+    attributes:
+      label: Actions Taken
+      description: What immediate actions have been taken?
+      placeholder: |
+        - Containment measures
+        - Investigation steps
+        - Communications sent
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence/Logs
+      description: Provide relevant logs or evidence (sanitized if necessary)
+      render: shell
+
+  - type: textarea
+    id: recommendations
+    attributes:
+      label: Recommendations
+      description: Suggested next steps or preventive measures
+      placeholder: |
+        - Immediate actions needed
+        - Long-term fixes
+        - Policy changes
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Response Checklist
+      options:
+        - label: Incident response runbook has been consulted
+          required: true
+        - label: Relevant stakeholders have been notified
+          required: true
+        - label: Evidence has been preserved
+          required: true
+        - label: Initial containment measures are in place
+          required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ### Next Steps
+        1. Security team will review and assign priority
+        2. Incident response team will be notified
+        3. Updates will be posted in this issue
+        4. Post-incident review will be scheduled 

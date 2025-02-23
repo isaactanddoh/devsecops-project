@@ -91,6 +91,14 @@ resource "aws_ecs_task_definition" "task" {
     }
   ])
 
+  lifecycle {
+    ignore_changes = [
+      container_definitions,
+      task_role_arn,
+      execution_role_arn
+    ]
+  }
+
   tags = merge(local.common_tags, {
     Name = local.task_family_name,
     Environment = var.environment,
