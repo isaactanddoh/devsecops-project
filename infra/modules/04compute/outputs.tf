@@ -139,6 +139,11 @@ output "ecs_config" {
   }
 }
 
+output "memory_utilization_alarm_enabled" {
+  description = "Whether memory utilization alarm is enabled"
+  value       = try(aws_cloudwatch_metric_alarm.memory_utilization.id != "", false)
+}
+
 # Backup outputs
 # output "backup_plan_enabled" {
 #   description = "Status of backup plan"

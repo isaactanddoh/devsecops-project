@@ -45,9 +45,5 @@ output "cpu_utilization_alarm_enabled" {
   value       = try(aws_cloudwatch_metric_alarm.cpu_utilization.id != "", false)
 }
 
-output "memory_utilization_alarm_enabled" {
-  description = "Whether memory utilization alarm is enabled"
-  value       = try(aws_cloudwatch_metric_alarm.memory_utilization.id != "", false)
-}
 
 

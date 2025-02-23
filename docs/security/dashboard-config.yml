@@ -1,0 +1,135 @@
+# Security Metrics Dashboard Configuration
+
+refresh_interval: 6h
+dashboard_url: "https://security.dashboard.internal"
+
+metrics:
+  vulnerability_scanning:
+    sources:
+      - name: "Dependabot"
+        query: "type:alert state:open severity:high,critical"
+        refresh: "4h"
+        threshold:
+          critical: 0
+          high: 2
+      
+      - name: "Snyk"
+        query: "issues.severity>=high"
+        refresh: "6h"
+        threshold:
+          critical: 0
+          high: 3
+      
+      - name: "OWASP Dependency Check"
+        path: "/reports/dependency-check-report.html"
+        refresh: "12h"
+        threshold:
+          critical: 0
+          high: 2
+
+  aws_security:
+    sources:
+      - name: "GuardDuty Findings"
+        cloudwatch_query: "source='aws.guardduty'"
+        timeframe: "24h"
+        threshold:
+          critical: 0
+          high: 1
+      
+      - name: "WAF Blocks"
+        cloudwatch_query: "source='aws.waf' action='BLOCK'"
+        timeframe: "1h"
+        alert_threshold: 100
+      
+      - name: "Failed Login Attempts"
+        cloudwatch_query: "filter @type = 'LoginFailure'"
+        timeframe: "1h"
+        alert_threshold: 10
+
+  container_security:
+    sources:
+      - name: "ECS Task Health"
+        metrics: 
+          - name: "CPU Utilization"
+            threshold: 80
+          - name: "Memory Utilization"
+            threshold: 80
+          - name: "Task Failures"
+            threshold: 2
+      
+      - name: "Container Vulnerabilities"
+        query: "trivy-scan-results severity:HIGH,CRITICAL"
+        refresh: "12h"
+        threshold:
+          critical: 0
+          high: 3
+
+alerts:
+  slack:
+    channel: "#security-alerts"
+    triggers:
+      - condition: "critical_vulnerabilities > 0"
+        message: "🚨 Critical vulnerabilities detected!"
+      - condition: "failed_logins > 10"
+        message: "⚠️ Unusual login failure pattern detected"
+      - condition: "waf_blocks > 100"
+        message: "🛡️ High number of WAF blocks detected"
+
+  email:
+    recipients: 
+      - "security-team@company.com"
+      - "devops-team@company.com"
+    triggers:
+      - condition: "guardduty_findings.critical > 0"
+        subject: "Critical GuardDuty Finding Detected"
+
+reporting:
+  daily:
+    schedule: "0 0 * * *"
+    format: ["HTML", "PDF"]
+    sections:
+      - "Vulnerability Summary"
+      - "Security Events"
+      - "Compliance Status"
+      - "Action Items"
+    recipients: ["security@company.com"]
+
+  weekly:
+    schedule: "0 0 * * 0"
+    format: ["HTML", "PDF"]
+    sections:
+      - "Weekly Security Trends"
+      - "Patch Status"
+      - "Compliance Report"
+      - "Incident Summary"
+    recipients: ["security-team@company.com", "management@company.com"]
+
+visualization:
+  panels:
+    - name: "Critical Vulnerabilities"
+      type: "counter"
+      alert_threshold: 0
+    
+    - name: "Security Events Timeline"
+      type: "timeline"
+      timeframe: "24h"
+    
+    - name: "Resource Security Status"
+      type: "status-grid"
+      components:
+        - "ECS Clusters"
+        - "Load Balancers"
+        - "Databases"
+        - "S3 Buckets"
+
+integrations:
+  aws_security_hub:
+    enabled: true
+    import_findings: true
+    
+  sonarqube:
+    url: "https://sonar.internal"
+    metrics:
+      - "security_rating"
+      - "vulnerabilities"
+      - "security_hotspots" 

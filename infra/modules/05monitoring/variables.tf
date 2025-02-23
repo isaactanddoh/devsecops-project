@@ -51,12 +51,6 @@ variable "cpu_threshold" {
   default     = 80
 }
 
-variable "memory_threshold" {
-  description = "Memory utilization threshold for alarm"
-  type        = number
-  default     = 80
-}
-
 variable "alb_arn_suffix" {
   description = "ARN suffix of the ALB"
   type        = string

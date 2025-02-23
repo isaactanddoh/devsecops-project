@@ -62,5 +62,16 @@ data "aws_sns_topic" "alerts" {
   name = "${local.name_prefix}-backend-alerts"
 }
 
+# Fetch Alb ARN suffix
+data "aws_lb" "alb" {
+  name = "${local.name_prefix}-alb"
+}
+
+# Fetch application logs group
+data "aws_cloudwatch_log_group" "app_logs" {
+  name = "/aws/ecs/app-${local.ecs_cluster_name}-app-logs"
+}
+
+
 
 

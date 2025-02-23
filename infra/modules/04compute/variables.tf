@@ -25,6 +25,13 @@ variable "task_memory" {
   default     = 512
 }
 
+
+variable "memory_threshold" {
+  description = "Memory utilization threshold for alarm"
+  type        = number
+  default     = 80
+}
+
 # Container & Port Configuration
 variable "container_port" {
   description = "The container port the application listens on"
