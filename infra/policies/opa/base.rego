@@ -41,37 +41,37 @@ taggable_resources := {
 #################
 
 # Get the last action in the changes
-last_action(resource) = action {
+last_action(resource) = action if {
     actions := resource.change.actions
     action := actions[count(actions) - 1]
 }
 
 # Check if a resource is being deleted
-is_delete(resource) {
+is_delete(resource) if {
     last_action(resource) == "delete"
 }
 
 # Check if a resource has all required tags
-has_all_required_tags(tags) {
-    missing := required_tags - {x | x := object.keys(tags)[_]}
+has_all_required_tags(tags) if {
+    missing := {x | x = required_tags[_]} - {x | some x; x = object.keys(tags)[_]}
     count(missing) == 0
 }
 
 # Check if instance type is allowed for environment
-is_allowed_instance_type(type, env) {
-    allowed_instance_types[env][_] == type
+is_allowed_instance_type(type, env) if {
+    some i
+    allowed_instance_types[env][i] == type
 }
 
 #################
 # Deny Rules
 #################
 
-# Missing required tags
-deny[msg] {
+# Define the deny set with rules
+deny contains msg if {
     resource := tfplan.resource_changes[_]
     not is_delete(resource)
     resource.type == taggable_resources[_]
-    
     not has_all_required_tags(resource.change.after.tags)
     
     msg := sprintf(
@@ -81,7 +81,7 @@ deny[msg] {
 }
 
 # Invalid instance types
-deny[msg] {
+deny contains msg if {
     resource := tfplan.resource_changes[_]
     not is_delete(resource)
     resource.type == "aws_instance"
@@ -98,7 +98,7 @@ deny[msg] {
 }
 
 # Public S3 buckets
-deny[msg] {
+deny contains msg if {
     resource := tfplan.resource_changes[_]
     not is_delete(resource)
     resource.type == "aws_s3_bucket"
@@ -113,7 +113,7 @@ deny[msg] {
 }
 
 # Container security
-deny[msg] {
+deny contains msg if {
     resource := tfplan.resource_changes[_]
     not is_delete(resource)
     resource.type == "aws_ecs_task_definition"
@@ -128,7 +128,7 @@ deny[msg] {
 }
 
 # Container ports
-deny[msg] {
+deny contains msg if {
     resource := tfplan.resource_changes[_]
     not is_delete(resource)
     resource.type == "aws_ecs_task_definition"
@@ -144,7 +144,7 @@ deny[msg] {
 }
 
 # Container insights
-deny[msg] {
+deny contains msg if {
     resource := tfplan.resource_changes[_]
     not is_delete(resource)
     resource.type == "aws_ecs_cluster"
@@ -160,7 +160,7 @@ deny[msg] {
 }
 
 # Volume mounts
-deny[msg] {
+deny contains msg if {
     resource := tfplan.resource_changes[_]
     not is_delete(resource)
     resource.type == "aws_ecs_task_definition"
@@ -176,7 +176,7 @@ deny[msg] {
 }
 
 # Encryption
-deny[msg] {
+deny contains msg if {
     resource := tfplan.resource_changes[_]
     not is_delete(resource)
     
@@ -187,14 +187,4 @@ deny[msg] {
         "bucket %v must enable encryption",
         [resource.address]
     )
-}
-
-# Add debug rules
-debug_input {
-    print("Full tfplan:", tfplan)
-}
-
-debug_resources {
-    resource := tfplan.resource_changes[_]
-    print("Checking resource:", resource)
 }
