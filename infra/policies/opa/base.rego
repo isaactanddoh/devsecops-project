@@ -41,12 +41,63 @@ taggable_resources := {
 #################
 
 # Get the last action in the changes
+last_action(resource) = action if {
 last_action(resource) = action {
     actions := resource.change.actions
     action := actions[count(actions) - 1]
 }
 
 # Check if a resource is being deleted
+is_delete(resource) if {
+    last_action(resource) == "delete"
+}
+
+# Check if a resource has all required tags
+has_all_required_tags(tags) if {
+    missing := {x | x = required_tags[_]} - {x | some x; x = object.keys(tags)[_]}
+    count(missing) == 0
+}
+
+# Check if instance type is allowed for environment
+is_allowed_instance_type(type, env) if {
+    some i
+    allowed_instance_types[env][i] == type
+}
+
+#################
+# Deny Rules
+#################
+
+# Define the deny set with rules
+deny contains msg if {
+    resource := tfplan.resource_changes[_]
+    not is_delete(resource)
+    resource.type == taggable_resources[_]
+    not has_all_required_tags(resource.change.after.tags)
+    
+    msg := sprintf(
+        "resource %v missing required tags. tags present: %v",
+        [resource.address, object.keys(resource.change.after.tags)]
+    )
+}
+
+# Invalid instance types
+deny contains msg if {
+    resource := tfplan.resource_changes[_]
+    not is_delete(resource)
+    resource.type == "aws_instance"
+    env := resource.change.after.tags.Environment
+    type := resource.change.after.instance_type
+    not is_allowed_instance_type(type, env)   
+    msg := sprintf(
+        "instance type %v not allowed in %v environment",
+        [type, env]
+    )
+}
+
+# Public S3 buckets
+deny contains msg if {
+=======
 is_delete(resource) {
     last_action(resource) == "delete"
 }
@@ -113,6 +164,11 @@ deny[msg] {
 }
 
 # Container security
+deny contains msg if {
+=======
+}
+
+# Container security
 deny[msg] {
     resource := tfplan.resource_changes[_]
     not is_delete(resource)
@@ -134,6 +190,18 @@ deny[msg] {
     resource.type == "aws_ecs_task_definition"
     
     container := resource.change.after.container_definitions[_]
+
+    not container.user
+    
+    msg := sprintf(
+        "container %v must specify non-root user",
+        [container.name]
+    )
+}
+
+# Container ports
+deny contains msg if {
+=======
     port := container.portMappings[_].containerPort
     port <= 1024
     
@@ -166,6 +234,29 @@ deny[msg] {
     resource.type == "aws_ecs_task_definition"
     
     container := resource.change.after.container_definitions[_]
+
+    port := container.portMappings[_].containerPort
+    port <= 1024
+    
+    msg := sprintf(
+        "container %v using privileged port %v",
+        [container.name, port]
+    )
+}
+
+# Container insights
+deny contains msg if {
+    resource := tfplan.resource_changes[_]
+    not is_delete(resource)
+    resource.type == "aws_ecs_cluster"
+    
+    setting := resource.change.after.setting[_]
+    setting.name == "containerInsights"
+    not setting.value == "enabled"
+    
+    msg := sprintf(
+        "cluster %v must enable container insights",
+=======
     volume := container.mountPoints[_]
     not volume.readOnly
     
@@ -189,12 +280,32 @@ deny[msg] {
     )
 }
 
-# Add debug rules
-debug_input {
-    print("Full tfplan:", tfplan)
+# Volume mounts
+deny contains msg if {
+    resource := tfplan.resource_changes[_]
+    not is_delete(resource)
+    resource.type == "aws_ecs_task_definition"
+    
+    container := resource.change.after.container_definitions[_]
+    volume := container.mountPoints[_]
+    not volume.readOnly
+    
+    msg := sprintf(
+        "volume %v in container %v must be read-only",
+        [volume.sourceVolume, container.name]
+    )
 }
 
-debug_resources {
+# Encryption
+deny contains msg if {
     resource := tfplan.resource_changes[_]
-    print("Checking resource:", resource)
+    not is_delete(resource)
+    
+    resource.type == "aws_s3_bucket"
+    not resource.change.after.server_side_encryption_configuration
+    
+    msg := sprintf(
+        "bucket %v must enable encryption",
+        [resource.address]
+    )
 }

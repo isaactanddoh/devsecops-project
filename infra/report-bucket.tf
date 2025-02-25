@@ -39,16 +39,14 @@ resource "aws_kms_alias" "report_bucket_key_alias" {
 resource "aws_s3_bucket" "security_reports" {
   bucket = "${var.report_bucket_environment}-bucket-${var.timestamp}"
 
-  tags = {
-    Name        = "${var.report_bucket_environment}-bucket-${var.timestamp}"
-    Environment = var.report_bucket_environment
-    Project     = var.project_name
-    Owner       = var.owner
-  }
+  tags = merge(local.common_tags, {
+    Name = "security-reports-bucket"
+    Managed_by = "terraform"
+  })
 
   lifecycle {
     ignore_changes = [
-      tags
+      tags["Name"]
     ]
   }
 

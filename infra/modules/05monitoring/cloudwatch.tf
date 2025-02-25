@@ -1,41 +1,41 @@
-# CloudWatch Alarms for Backend Resources
-resource "aws_cloudwatch_metric_alarm" "dynamodb_throttles" {
-  alarm_name          = "${local.name_prefix}-dynamodb-throttles"
-  comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = 2
-  metric_name         = "ThrottledRequests"
-  namespace           = "AWS/DynamoDB"
-  period              = 300
-  statistic           = "Sum"
-  threshold           = 1
-  alarm_description   = "DynamoDB throttled requests"
-  alarm_actions       = [aws_sns_topic.alerts.arn]
+# # CloudWatch Alarms for Backend Resources
+# resource "aws_cloudwatch_metric_alarm" "dynamodb_throttles" {
+#   alarm_name          = "${local.name_prefix}-dynamodb-throttles"
+#   comparison_operator = "GreaterThanThreshold"
+#   evaluation_periods  = 2
+#   metric_name         = "ThrottledRequests"
+#   namespace           = "AWS/DynamoDB"
+#   period              = 300
+#   statistic           = "Sum"
+#   threshold           = 1
+#   alarm_description   = "DynamoDB throttled requests"
+#   alarm_actions       = [aws_sns_topic.alerts.arn]
 
-  dimensions = {
-    TableName = data.aws_dynamodb_table.terraform_locks.name
-  }
+#   dimensions = {
+#     TableName = data.aws_dynamodb_table.terraform_locks.name
+#   }
 
-  tags = local.common_tags
-}
-# CloudWatch Metric Alarm for S3 Errors
-resource "aws_cloudwatch_metric_alarm" "s3_errors" {
-  alarm_name          = "${local.name_prefix}-s3-errors"
-  comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = 2
-  metric_name         = "5xxErrors"
-  namespace           = "AWS/S3"
-  period              = 300
-  statistic           = "Sum"
-  threshold           = 1
-  alarm_description   = "S3 5xx errors"
-  alarm_actions       = [aws_sns_topic.alerts.arn]
+#   tags = local.common_tags
+# }
+# # CloudWatch Metric Alarm for S3 Errors
+# resource "aws_cloudwatch_metric_alarm" "s3_errors" {
+#   alarm_name          = "${local.name_prefix}-s3-errors"
+#   comparison_operator = "GreaterThanThreshold"
+#   evaluation_periods  = 2
+#   metric_name         = "5xxErrors"
+#   namespace           = "AWS/S3"
+#   period              = 300
+#   statistic           = "Sum"
+#   threshold           = 1
+#   alarm_description   = "S3 5xx errors"
+#   alarm_actions       = [aws_sns_topic.alerts.arn]
 
-  dimensions = {
-    BucketName = data.aws_s3_bucket.terraform_state.bucket
-  }
+#   dimensions = {
+#     BucketName = data.aws_s3_bucket.terraform_state.bucket
+#   }
 
-  tags = local.common_tags
-}
+#   tags = local.common_tags
+# }
 
 # Create CloudWatch Log Group for Flow Logs
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
