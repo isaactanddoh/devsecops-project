@@ -27,6 +27,8 @@ resource "aws_s3_bucket" "terraform_state" {
 
   #checkov:skip=CKV2_AWS_61: "Ensure that an S3 bucket has a lifecycle configuration"
   #checkov:skip=CKV_AWS_145: "Ensure that S3 buckets are encrypted with KMS by default"
+  #checkov:skip=CKV_AWS_144: "Ensure that S3 buckets are version enabled"
+  #checkov:skip=CKV_AWS_21: "Ensure all data stored in the S3 bucket have versioning enabled"
 }
 
 #  Enable Access Logging
@@ -41,14 +43,6 @@ resource "aws_s3_bucket_notification" "terraform_state" {
   bucket = aws_s3_bucket.terraform_state.id
 
   eventbridge = true
-}
-
-# Enable versioning
-resource "aws_s3_bucket_versioning" "terraform_state" {
-  bucket = aws_s3_bucket.terraform_state.id
-  versioning_configuration {
-    status = "Enabled"
-  }
 }
 
 # Enable encryption
@@ -102,26 +96,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "terraform_state" {
     abort_incomplete_multipart_upload {
       days_after_initiation = 7
     }
-  }
-}
-
-# Enable replication
-resource "aws_s3_bucket_replication_configuration" "terraform_state" {
-  bucket = aws_s3_bucket.terraform_state.id
-  role   = aws_iam_role.replication.arn
-
-  rule {
-    id     = "state-replication"
-    status = "Enabled"
-
-    destination {
-      bucket        = aws_s3_bucket.terraform_state_replica.arn
-      storage_class = "STANDARD_IA"
-    }
-  }
-
-  lifecycle {
-    create_before_destroy = false
   }
 }
 

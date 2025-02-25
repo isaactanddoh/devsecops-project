@@ -73,7 +73,7 @@ resource "aws_cloudwatch_dashboard" "main" {
         properties = {
           metrics = [
             ["AWS/ECS", "CPUUtilization", "ClusterName", local.ecs_cluster_name],
-            [".", "MemoryUtilization", ".", "."]
+            ["AWS/ECS", "MemoryUtilization", "ClusterName", local.ecs_cluster_name]
           ]
           period = 300
           stat   = "Average"
@@ -121,8 +121,8 @@ resource "aws_cloudwatch_dashboard" "security_performance" {
           view    = "timeSeries"
           stacked = false
           metrics = [
-            ["AWS/WAF", "BlockedRequests", "WebACL", "SecurityWebACL", { "stat": "Sum" }],
-            ["AWS/WAF", "AllowedRequests", "WebACL", "SecurityWebACL", { "stat": "Sum" }]
+            ["AWS/WAF", "BlockedRequests", "WebACL", data.aws_ssm_parameter.waf_acl_id.value, { "stat": "Sum" }],
+            ["AWS/WAF", "AllowedRequests", "WebACL", data.aws_ssm_parameter.waf_acl_id.value, { "stat": "Sum" }]
           ]
           region = var.aws_region
           title  = "WAF Requests (Blocked vs Allowed)"
@@ -138,7 +138,7 @@ resource "aws_cloudwatch_dashboard" "security_performance" {
         properties = {
           view    = "timeSeries"
           metrics = [
-            ["AWS/GuardDuty", "FindingsCount", { "stat": "Sum" }]
+            ["AWS/GuardDuty", "FindingsCount", "DetectorId", data.aws_ssm_parameter.guardduty_detector_id.value, { "stat": "Sum" }]
           ]
           region = var.aws_region
           title  = "GuardDuty Findings"
@@ -286,4 +286,15 @@ resource "aws_cloudwatch_query_definition" "security_analysis" {
     | sort @timestamp desc
     | limit 100
   EOF
+}
+
+# Create CloudWatch Log Group
+resource "aws_cloudwatch_log_group" "ecs_logs" {
+  name              = "/ecs/${local.name_prefix}"
+  kms_key_id        = aws_kms_alias.cloudwatch_kms_alias.arn
+  retention_in_days = var.workspace_config.log_retention_days
+
+  tags = merge(local.common_tags, {
+    Name        = "/ecs/${local.name_prefix}"
+  })
 }

@@ -4,6 +4,12 @@ variable "aws_region" {
   type        = string
 }
 
+# IAM Certificate Name
+variable "iam_cert_name" {
+  description = "The name of the IAM certificate"
+  type        = string
+}
+
 # ECS Cluster Name
 variable "ecs_cluster_name" {
   description = "The name of the ECS cluster"

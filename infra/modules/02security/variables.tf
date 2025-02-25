@@ -59,3 +59,15 @@ variable "portfolio_domain_name" {
   type        = string
 }
 
+#IAM Certificate Name
+variable "iam_cert_name" {
+  description = "The IAM certificate name"
+  type        = string
+}
+
+#Wildcard Domain Name
+variable "wildcard_domain_name" {
+  description = "The wildcard domain name"
+  type        = string
+}
+

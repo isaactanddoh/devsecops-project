@@ -4,6 +4,39 @@ variable "project_name" {
   type        = string
 }
 
+# IAM Certificate Name
+variable "iam_cert_name" {
+  description = "The name of the IAM certificate"
+  type        = string
+}
+
+#Wildcard Domain Name
+variable "wildcard_domain_name" {
+  description = "The wildcard domain name"
+  type        = string
+}
+
+# Enable SSO
+variable "enable_sso" {
+  description = "Enable AWS SSO for CloudWatch access"
+  type        = bool
+  default     = true
+}
+
+# SSO Instance ARN
+variable "sso_instance_arn" {
+  description = "ARN of the AWS SSO instance"
+  type        = string
+  default     = ""
+}
+
+# Team Member Names
+variable "team_member_names" {
+  description = "List of team member names for CloudWatch access"
+  type        = list(string)
+  default     = ["sre-engineer", "devops-engineer", "cloud-engineer"]
+}
+
 # Owner of the resource
 variable "owner" {
   description = "Owner of the resource"

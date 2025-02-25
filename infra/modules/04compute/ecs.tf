@@ -95,7 +95,7 @@ resource "aws_ecs_task_definition" "task" {
     ignore_changes = [
       container_definitions,
       task_role_arn,
-      execution_role_arn
+      execution_role_arn,
     ]
   }
 
@@ -215,42 +215,6 @@ resource "aws_appautoscaling_scheduled_action" "scale_down_night" {
   }
 }
 
-# KMS Key for CloudWatch logs
-resource "aws_kms_key" "cloudwatch_kms" {
-  description         = "KMS key for CloudWatch logs encryption"
-  enable_key_rotation = true
-
-  # Key policy
-  policy = templatefile("${path.root}/policies/kms-policy.json", {
-    account_id = data.aws_caller_identity.current.account_id
-  })
-
-  tags = merge(local.common_tags, {
-    Name        = "${local.name_prefix}-cloudwatch-kms",
-    Environment = var.environment,
-    Project     = var.project_name,
-    Owner       = var.owner
-  })
-}
-
-# KMS Alias for CloudWatch logs
-resource "aws_kms_alias" "cloudwatch_kms_alias" {
-  name          = "alias/${local.name_prefix}-cloudwatch-kms"
-  target_key_id = aws_kms_key.cloudwatch_kms.key_id
-}
-
-
-# Create CloudWatch Log Group
-resource "aws_cloudwatch_log_group" "ecs_logs" {
-  name              = "/ecs/${local.name_prefix}"
-  kms_key_id        = aws_kms_alias.cloudwatch_kms_alias.arn
-  retention_in_days = var.workspace_config.log_retention_days
-
-  tags = merge(local.common_tags, {
-    Name        = "/ecs/${local.name_prefix}"
-  })
-}
-
 # Add service discovery
 resource "aws_service_discovery_private_dns_namespace" "ecs" {
   name        = "${local.name_prefix}.local"
@@ -260,6 +224,15 @@ resource "aws_service_discovery_private_dns_namespace" "ecs" {
   tags = merge(local.common_tags, {
     Name        = "${local.name_prefix}.local"
   })
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes = [
+      name,
+      description,
+      vpc
+    ]
+  }
 }
 
 resource "aws_service_discovery_service" "ecs" {
@@ -283,4 +256,12 @@ resource "aws_service_discovery_service" "ecs" {
   tags = merge(local.common_tags, {
     Name        = local.ecs_service_name
   })
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes = [
+      name,
+      description
+    ]
+  }
 }

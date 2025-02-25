@@ -3,15 +3,6 @@ resource "aws_security_group" "alb_sg" {
   name        = local.alb_sg_name
   description = "Security group for ALB"
   vpc_id      = aws_ssm_parameter.vpc_id.value
-
-  ingress {
-    description = "Allow HTTP traffic to ALB"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = var.allowed_cidr_blocks
-  }
-
   ingress {
     description = "Allow HTTPS traffic to ALB"
     from_port   = 443

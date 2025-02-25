@@ -12,20 +12,132 @@ The infrastructure is organized into the following modules:
 - **Compute**: ECS Fargate with auto-scaling
 - **Monitoring**: CloudWatch, Alerts, Logging
 
-## 🔐 Security Features
 
-- WAF protection for web applications
-- HTTPS enforcement with modern TLS
-- Container security controls
-  - Non-root container user
-  - Read-only root filesystem
-  - Port restrictions (>1024)
-- Network segmentation
-- Access logging
-- Encryption at rest and in transit
-- Regular security scanning
-- GuardDuty integration
-- OPA policy enforcement
+# Architecture Diagram: docs\architecture.png
+
+
+## 🔍 Security Monitoring & Incident Response
+
+### Security Dashboard
+The project includes two complementary dashboard systems:
+
+1. **Infrastructure Monitoring Dashboard** (Terraform-managed)
+   - Resource utilization metrics
+   - Performance monitoring
+   - Cost tracking
+   - Operational health
+
+2. **Security Metrics Dashboard** (`docs/security/dashboard-config.yml`)
+   - Vulnerability scanning results
+   - AWS security findings
+   - Container security metrics
+   - Compliance status
+   - Automated security alerts
+   - Integration with:
+     - Dependabot
+     - Snyk
+     - OWASP Dependency Check
+     - GuardDuty
+     - WAF
+
+### Incident Response
+The project includes a comprehensive incident response system:
+
+1. **Incident Reporting** (`.github/ISSUE_TEMPLATE/security-incident.yml`)
+   - Standardized reporting template
+   - Severity classification
+   - Impact assessment
+   - Response tracking
+   - Evidence collection
+
+2. **Response Automation**
+   - GuardDuty-triggered Lambda functions
+   - Automated WAF updates
+   - Slack notifications
+   - Email alerts
+
+## 🔐 Security Features & SOC 2 Control Mappings
+
+### Access Control & Authentication
+- WAF protection for web applications (CC7.1, CC6.1)
+- HTTPS enforcement with modern TLS (CC6.7)
+- AWS IAM Identity Center integration (CC6.1, CC6.2)
+- Role-based access control (CC6.3)
+- Multi-factor authentication enforcement (CC6.1)
+
+### Infrastructure Security
+- Network segmentation with public/private subnets (CC6.6)
+- Security group rules with least privilege (CC6.6, CC6.1)
+- GuardDuty integration for threat detection (CC7.2, CC7.3)
+- Encryption at rest and in transit (CC6.7, CC6.8)
+
+### Container Security
+- Non-root container user enforcement (CC6.1, CC6.8)
+- Read-only root filesystem (CC6.8)
+- Port restrictions (>1024) (CC6.6)
+- Container image scanning (CC7.1)
+- Resource limits and quotas (CC6.8)
+
+### Monitoring & Logging
+- CloudWatch metrics and alarms (CC3.1, CC7.2)
+- Access logging for all components (CC7.2, CC4.1)
+- VPC Flow Logs (CC4.1)
+- AWS CloudTrail for API activity (CC4.1, CC7.2)
+- Real-time security alerts (CC7.2, CC7.3)
+
+### Vulnerability Management
+- Automated vulnerability scanning (CC7.1, CC7.2)
+  - Dependabot integration
+  - OWASP dependency checks
+  - Container image scanning
+  - Infrastructure-as-code scanning
+- Regular security assessments (CC7.1)
+- Automated patching (CC7.1)
+
+### Incident Response
+- Standardized incident response process (CC7.3, CC7.4)
+- Automated threat response (CC7.2, CC7.3)
+  - GuardDuty findings trigger Lambda functions
+  - WAF rule updates
+  - Security group modifications
+- Incident tracking and documentation (CC7.4)
+- Post-incident analysis (CC7.4, CC7.5)
+
+### Compliance & Governance
+- OPA policy enforcement (CC6.8, CC7.1)
+- Infrastructure-as-code security checks (CC7.1)
+- Regular compliance scanning (CC4.1)
+- Automated security reporting (CC2.3)
+
+### Data Protection
+- KMS encryption for sensitive data (CC6.7)
+- S3 bucket security controls (CC6.6, CC6.7)
+  - Versioning enabled
+  - Encryption at rest
+  - Public access blocked
+- Backup and recovery procedures (A1.2)
+- Data lifecycle management (CC6.7)
+
+### Change Management
+- Infrastructure-as-code version control (CC8.1)
+- Automated deployment pipelines (CC8.1)
+- Change approval workflows (CC8.1)
+- Environment segregation (CC8.1)
+
+### Business Continuity
+- Multi-AZ deployment (A1.1)
+- Automated backups (A1.2)
+- Disaster recovery procedures (A1.2)
+- High availability configuration (A1.1)
+
+### SOC 2 Control Categories Addressed:
+- CC2: Communication and Information
+- CC3: Risk Assessment
+- CC4: Monitoring Activities
+- CC6: Logical and Physical Access Controls
+- CC7: System Operations
+- CC8: Change Management
+- A1: Availability
 
 ## 🛠️ Prerequisites
 
@@ -127,6 +239,35 @@ make test-opa
 ```bash
 make test-all
 ```
+
+## 📊 Monitoring & Alerting
+
+### Infrastructure Monitoring
+- CloudWatch metrics and alarms
+- Auto-scaling metrics
+- Performance monitoring
+- Cost tracking
+- Resource utilization
+
+### Security Monitoring
+- GuardDuty findings
+- WAF metrics
+- Login attempts
+- Container vulnerabilities
+- Dependency scanning
+- Compliance status
+
+### Security Dashboard Access
+- Authentication required via AWS IAM Identity Center
+- IP-based access restrictions
+- HTTPS/TLS encryption enforced
+
+### Alerting Channels
+- Slack notifications
+- Email alerts
+- SNS topics
+- CloudWatch alarms
+- Security incident tickets
 
 ## 🔐 Security Considerations
 

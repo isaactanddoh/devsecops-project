@@ -1,7 +1,17 @@
 # Security Metrics Dashboard Configuration
 
 refresh_interval: 6h
-dashboard_url: "https://security.dashboard.internal"
+
+# Dashboard Access Configuration
+dashboard_access:
+  internal_url: "https://security.dashboard.internal"  # Requires Route 53 private hosted zone
+  external_url: "https://security-dashboard.${var.primary_domain_name}"  # Replace with your domain
+  access_control:
+    require_vpn: true
+    allowed_ip_ranges: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
+    authentication:
+      type: "SAML"
+      provider: "AWS IAM Identity Center"
 
 metrics:
   vulnerability_scanning:

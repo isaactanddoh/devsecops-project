@@ -5,13 +5,3 @@ resource "aws_iam_role" "replication" {
 
   tags = local.common_tags
 }
-
-# IAM policy for replication
-resource "aws_iam_role_policy" "replication" {
-  name = "${local.name_prefix}-s3-replication"
-  role = aws_iam_role.replication.id
-  policy = templatefile("${path.root}/policies/s3-replication-policy.json", {
-    terraform_state_bucket_arn = aws_s3_bucket.terraform_state.arn,
-    replica_bucket_arn         = aws_s3_bucket.terraform_state_replica.arn
-  })
-} 
