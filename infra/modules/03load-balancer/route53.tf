@@ -12,4 +12,12 @@ resource "aws_route53_record" "portfolio_domain" {
   }
 
   depends_on = [aws_lb.alb]
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes = [
+      name,
+      zone_id
+    ]
+  }
 }

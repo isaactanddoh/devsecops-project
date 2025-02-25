@@ -86,6 +86,17 @@ resource "aws_lb_target_group" "ecs_target_group" {
     unhealthy_threshold = 2
   }
 
+  lifecycle {
+    ignore_changes = [
+      name,
+      port,
+      protocol,
+      target_type,
+      vpc_id
+    ]
+    create_before_destroy = true
+  }
+
   tags = merge(local.common_tags, {
     Name = local.target_group_name
   })
