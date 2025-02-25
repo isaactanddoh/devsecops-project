@@ -6,7 +6,12 @@ data "aws_route53_zone" "primary" {
 
 # Get IAM Certificate
 data "aws_iam_server_certificate" "iam_cert" {
-  name = "portfolio-thekloudwiz-com"
+  name = var.iam_cert_name
 }
 
-
+# Get ACM Certificate
+data "aws_acm_certificate" "acm_cert" {
+  domain = var.wildcard_domain_name
+  statuses = ["ISSUED"]
+  types    = ["AMAZON_ISSUED"]
+}

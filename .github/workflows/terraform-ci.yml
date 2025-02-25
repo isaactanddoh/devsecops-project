@@ -6,8 +6,14 @@ on:
     paths:
       - infra/**/*.tf
       - infra/**/*.tfvars.*
-      - .github/workflows/terraform-ci.yml
       - '!.github/dependabot.yml'
+      - '!.github/workflows/terraform-cd.yml'
+      - '!.github/workflows/terraform-ci.yml'
+      - '!.github/workflows/security-dashboard.yml'
+      - '!.github/ISSUE_TEMPLATE/security-incident.yml'
+      - '!docs/**'
+      - '!policies/**'
+      - '!tests/**'
 
 permissions:
   id-token: write

@@ -37,14 +37,15 @@ data "aws_ssm_parameter" "waf_acl_arn" {
   name = "/isaac-${terraform.workspace}/waf_acl_arn"
 }
 
-# # Get ACM Certificate
-# data "aws_acm_certificate" "acm_cert" {
-#   domain   = var.portfolio_domain_name
-#   statuses = ["ISSUED"]
-# }
+# Get ACM Certificate
+data "aws_acm_certificate" "acm_cert" {
+  domain   = var.wildcard_domain_name
+  statuses = ["ISSUED"]
+  types    = ["AMAZON_ISSUED"]
+}
 
 # Get IAM Certificate
 data "aws_iam_server_certificate" "iam_cert" {
-  name = "portfolio-thekloudwiz-com"
+  name = var.iam_cert_name
 }
 

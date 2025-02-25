@@ -72,6 +72,21 @@ data "aws_cloudwatch_log_group" "app_logs" {
   name = "/aws/ecs/app-${local.ecs_cluster_name}-app-logs"
 }
 
+# Fetch WAF ACL ID
+data "aws_ssm_parameter" "waf_acl_id" {
+  name = "/isaac-${terraform.workspace}/waf_acl_id"
+}
+
+# Fetch GuardDuty Detector ID
+data "aws_ssm_parameter" "guardduty_detector_id" {
+  name = "/isaac-${terraform.workspace}/guardduty_detector_id"
+}
+
+
+
+
+
+
 
 
 
