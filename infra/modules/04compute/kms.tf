@@ -12,6 +12,10 @@ resource "aws_kms_key" "ecr_key" {
   tags = merge(local.common_tags, {
     Name = "${local.name_prefix}-ecr-key"
   })
+  
+  lifecycle {
+    ignore_changes = [policy, tags]
+  }
 }
 
 # Create KMS Alias for ECR
@@ -36,6 +40,10 @@ resource "aws_kms_key" "cloudwatch_kms" {
     Project     = var.project_name,
     Owner       = var.owner
   })
+  
+  lifecycle {
+    ignore_changes = [policy, tags]
+  }
 }
 
 # KMS Alias for CloudWatch logs

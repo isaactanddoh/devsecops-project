@@ -68,4 +68,8 @@ resource "aws_s3_object" "lambda_zip" {
   bucket = aws_s3_bucket.lambda_bucket.bucket
   key    = "lambda-function.zip"
   source = "${path.module}/lambda_function.zip"
+  
+  lifecycle {
+    ignore_changes = [etag, source, source_hash]
+  }
 }

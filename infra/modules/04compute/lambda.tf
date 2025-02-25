@@ -16,7 +16,13 @@ resource "aws_lambda_function" "guardduty_lambda" {
   }
 
   lifecycle {
-    ignore_changes = [s3_key, vpc_config]
+    ignore_changes = [
+      s3_key, 
+      vpc_config, 
+      source_code_hash, 
+      environment,
+      tags
+    ]
   }
 
   environment {
