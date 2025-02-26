@@ -138,7 +138,6 @@ terraform.tfstate.d/
 .terraform.*
 *.terraform
 
-scripts/
 tfplan.json
 tfplan.binary
 infra\tfplan.json

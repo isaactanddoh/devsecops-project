@@ -4,8 +4,8 @@ refresh_interval: 6h
 
 # Dashboard Access Configuration
 dashboard_access:
-  internal_url: "https://security.dashboard.internal"  # Requires Route 53 private hosted zone
-  external_url: "https://security-dashboard.${var.primary_domain_name}"  # Replace with your domain
+  internal_url: "https://security.dashboard.internal"
+  external_url: "https://security-dashboard.${var.primary_domain_name}"
   access_control:
     require_vpn: true
     allowed_ip_ranges: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
@@ -112,7 +112,7 @@ reporting:
       - "Patch Status"
       - "Compliance Report"
       - "Incident Summary"
-    recipients: ["security-team@company.com", "management@company.com"]
+    recipients: ["thekloudwiz+security@gmail.com", "thekloudwiz+management@gmail.com"]
 
 visualization:
   panels:
