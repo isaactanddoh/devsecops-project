@@ -47,6 +47,7 @@ class SecurityDashboard:
             print(f"Warning: Could not determine environment: {str(e)}")
             return 'dev'  # Default to dev environment
 
+
     def get_vulnerability_metrics(self):
         metrics = {
             "critical": 0,
@@ -163,6 +164,20 @@ class SecurityDashboard:
         except Exception as e:
             print(f"Warning: Error parsing Dependency Check report: {str(e)}")
         
+        # Get Trivy scan results
+        trivy_report_path = Path(__file__).parent.parent / "reports/trivy-results.json"
+        if trivy_report_path.exists():
+            with open(trivy_report_path) as f:
+                report = json.load(f)
+                for vulnerability in report.get("vulnerabilities", []):
+                    severity = vulnerability.get("severity", "").lower()
+                    if severity in metrics:
+                        metrics[severity] += 1
+                    if vulnerability.get("fixed_version"):
+                        metrics["fixed"] += 1
+                    else:
+                        metrics["in_progress"] += 1
+
         return metrics
 
     def get_aws_security_metrics(self):
