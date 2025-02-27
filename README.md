@@ -20,7 +20,6 @@ The infrastructure is organized into the following modules:
 For detailed architecture information, see:
 - Architecture Diagram: [`docs/architecture.png`](docs/architecture.png)
 - Network Design: [`docs/network/network-design.md`](docs/network/network-design.md)
-- Security Controls: [`docs/security/security-controls.md`](docs/security/security-controls.md)
 
 ## 🔍 Security Monitoring & Incident Response
 
