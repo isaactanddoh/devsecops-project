@@ -5,7 +5,7 @@ A secure infrastructure-as-code project implementing best practices for AWS infr
 ## 🌐 Deployed Applications
 
 - **Portfolio Website**: [portfolio.thekloudwiz.com](https://portfolio.thekloudwiz.com)
-- **Application Repository**: [Portfolio App](https://github.com/isaactanddoh/portfolio-app.git) - Portfolio application built with secure DevOps practices
+- **Application Repository**: [Portfolio App](https://github.com/isaactanddoh/portfolio-app.git) - Modern portfolio application built with secure DevOps practices
 
 ## 🏗️ Architecture Overview
 
@@ -19,7 +19,6 @@ The infrastructure is organized into the following modules:
 
 For detailed architecture information, see:
 - Architecture Diagram: [`docs/architecture.png`](docs/architecture.png)
-- Network Design: [`docs/network/network-design.md`](docs/network/network-design.md)
 
 ## 🔍 Security Monitoring & Incident Response
 
@@ -160,6 +159,21 @@ The project includes a comprehensive incident response system:
 - Make utility
 - Python 3.9+
 
+## 📁 Directory Structure 
+├── .github/
+│ └── workflows/ # GitHub Actions workflows
+├── infra/
+│ ├── modules/ # Terraform modules
+│ │ ├── 01networking/ # VPC and network configuration
+│ │ ├── 02security/ # Security controls and WAF
+│ │ ├── 03load-balancer/# ALB configuration
+│ │ ├── 04compute/ # ECS and Lambda resources
+│ │ └── 05monitoring/ # CloudWatch and alerting
+│ ├── environments/ # Environment-specific configurations
+│ ├── policies/ # IAM and OPA policies
+│ └── tests/ # Terraform tests
+└── README.md # Project documentation
+
 ## 🚀 Environment Configuration
 
 The project supports three environments:
@@ -169,7 +183,7 @@ The project supports three environments:
   - Less strict security controls
   - Configuration: `infra/environments/terraform.tfvars.dev`
 
-- **Staging**: Staging environment
+- **Staging**: Pre-production environment
   - Moderate resources
   - Production-like security
   - Configuration: `infra/environments/terraform.tfvars.staging`
@@ -178,8 +192,6 @@ The project supports three environments:
   - High availability
   - Strict security controls
   - Configuration: `infra/environments/terraform.tfvars.prod`
-
-For detailed environment setup and management procedures, see [`docs/environments/README.md`](docs/environments/README.md).
 
 ## 🔄 CI/CD Pipeline
 

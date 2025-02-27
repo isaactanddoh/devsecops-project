@@ -12,7 +12,7 @@ on:
       - '!.github/workflows/security-dashboard.yml'
       - '!.github/ISSUE_TEMPLATE/security-incident.yml'
       - '!docs/**'
-      - 'README.md'
+      - '!README.md'
 
 
   workflow_dispatch:
