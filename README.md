@@ -2,6 +2,11 @@
 
 A secure infrastructure-as-code project implementing best practices for AWS infrastructure deployment with multiple environments and comprehensive security controls.
 
+## 🌐 Deployed Applications
+
+- **Portfolio Website**: [portfolio.thekloudwiz.com](https://portfolio.thekloudwiz.com)
+- **Application Repository**: [Portfolio App](https://github.com/isaactanddoh/portfolio-app.git) - Portfolio application built with secure DevOps practices
+
 ## 🏗️ Architecture Overview
 
 The infrastructure is organized into the following modules:
@@ -12,22 +17,23 @@ The infrastructure is organized into the following modules:
 - **Compute**: ECS Fargate with auto-scaling
 - **Monitoring**: CloudWatch, Alerts, Logging
 
-
-# Architecture Diagram: docs\architecture.png
-
+For detailed architecture information, see:
+- Architecture Diagram: [`docs/architecture.png`](docs/architecture.png)
+- Network Design: [`docs/network/network-design.md`](docs/network/network-design.md)
+- Security Controls: [`docs/security/security-controls.md`](docs/security/security-controls.md)
 
 ## 🔍 Security Monitoring & Incident Response
 
 ### Security Dashboard
 The project includes two complementary dashboard systems:
 
-1. **Infrastructure Monitoring Dashboard** (Terraform-managed)
+1. **Infrastructure Monitoring Dashboard**
    - Resource utilization metrics
    - Performance monitoring
    - Cost tracking
    - Operational health
 
-2. **Security Metrics Dashboard** (`docs/security/dashboard-config.yml`)
+2. **Security Metrics Dashboard**
    - Vulnerability scanning results
    - AWS security findings
    - Container security metrics
@@ -43,14 +49,20 @@ The project includes two complementary dashboard systems:
 ### Incident Response
 The project includes a comprehensive incident response system:
 
-1. **Incident Reporting** (`.github/ISSUE_TEMPLATE/security-incident.yml`)
+1. **Incident Response Plan**
+   - Response procedures
+   - Team responsibilities
+   - Communication protocols
+   - Recovery steps
+
+2. **Incident Reporting**
    - Standardized reporting template
    - Severity classification
    - Impact assessment
    - Response tracking
    - Evidence collection
 
-2. **Response Automation**
+3. **Response Automation**
    - GuardDuty-triggered Lambda functions
    - Automated WAF updates
    - Slack notifications
@@ -149,21 +161,6 @@ The project includes a comprehensive incident response system:
 - Make utility
 - Python 3.9+
 
-## 📁 Directory Structure 
-├── .github/
-│ └── workflows/ # GitHub Actions workflows
-├── infra/
-│ ├── modules/ # Terraform modules
-│ │ ├── 01networking/ # VPC and network configuration
-│ │ ├── 02security/ # Security controls and WAF
-│ │ ├── 03load-balancer/# ALB configuration
-│ │ ├── 04compute/ # ECS and Lambda resources
-│ │ └── 05monitoring/ # CloudWatch and alerting
-│ ├── environments/ # Environment-specific configurations
-│ ├── policies/ # IAM and OPA policies
-│ └── tests/ # Terraform tests
-└── README.md # Project documentation
-
 ## 🚀 Environment Configuration
 
 The project supports three environments:
@@ -171,17 +168,19 @@ The project supports three environments:
 - **Dev**: Development environment
   - Minimal resources
   - Less strict security controls
-  - Daily backups
+  - Configuration: `infra/environments/terraform.tfvars.dev`
 
-- **Staging**: Pre-production environment
+- **Staging**: Staging environment
   - Moderate resources
   - Production-like security
-  - Daily backups
+  - Configuration: `infra/environments/terraform.tfvars.staging`
 
 - **Production**: Production environment
   - High availability
   - Strict security controls
-  - Hourly backups
+  - Configuration: `infra/environments/terraform.tfvars.prod`
+
+For detailed environment setup and management procedures, see [`docs/environments/README.md`](docs/environments/README.md).
 
 ## 🔄 CI/CD Pipeline
 
