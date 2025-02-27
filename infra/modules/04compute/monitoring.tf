@@ -72,8 +72,8 @@ resource "aws_cloudwatch_dashboard" "main" {
 
         properties = {
           metrics = [
-            ["AWS/ECS", "CPUUtilization", "ClusterName", local.ecs_cluster_name],
-            ["AWS/ECS", "MemoryUtilization", "ClusterName", local.ecs_cluster_name]
+            ["AWS/ECS", "CPUUtilization", "ClusterName", local.ecs_cluster_name, { "stat": "Average" }],
+            ["AWS/ECS", "MemoryUtilization", "ClusterName", local.ecs_cluster_name, { "stat": "Average" }]
           ]
           period = 300
           stat   = "Average"
@@ -121,8 +121,8 @@ resource "aws_cloudwatch_dashboard" "security_performance" {
           view    = "timeSeries"
           stacked = false
           metrics = [
-            ["AWS/WAF", "BlockedRequests", "WebACL", data.aws_ssm_parameter.waf_acl_id.value, { "stat": "Sum" }],
-            ["AWS/WAF", "AllowedRequests", "WebACL", data.aws_ssm_parameter.waf_acl_id.value, { "stat": "Sum" }]
+            ["AWS/WAFV2", "BlockedRequests", "WebACL", data.aws_ssm_parameter.waf_acl_id.value, { "stat": "Sum" }],
+            ["AWS/WAFV2", "AllowedRequests", "WebACL", data.aws_ssm_parameter.waf_acl_id.value, { "stat": "Sum" }]
           ]
           region = var.aws_region
           title  = "WAF Requests (Blocked vs Allowed)"
@@ -145,7 +145,7 @@ resource "aws_cloudwatch_dashboard" "security_performance" {
           period = 300
         }
       },
-      # Application Performance Section
+      # ALB Performance Section
       {
         type   = "metric"
         x      = 0
@@ -172,12 +172,30 @@ resource "aws_cloudwatch_dashboard" "security_performance" {
         properties = {
           view    = "timeSeries"
           metrics = [
-            ["AWS/ECS", "CPUUtilization", "ClusterName", local.ecs_cluster_name],
-            ["AWS/ECS", "MemoryUtilization", "ClusterName", local.ecs_cluster_name]
+            ["AWS/ECS", "CPUUtilization", "ClusterName", local.ecs_cluster_name, { "stat": "Average" }],
+            ["AWS/ECS", "MemoryUtilization", "ClusterName", local.ecs_cluster_name, { "stat": "Average" }]
           ]
           region = var.aws_region
           title  = "ECS Cluster Performance"
-          period = 300
+          period = 60
+        }
+      },
+      {
+        type   = "metric"
+        x      = 12
+        y      = 12
+        width  = 12
+        height = 6
+        properties = {
+          view    = "timeSeries"
+          metrics = [
+            ["AWS/ECS", "RunningTaskCount", "ClusterName", local.ecs_cluster_name, { "stat": "Average" }],
+            ["AWS/ECS", "PendingTaskCount", "ClusterName", local.ecs_cluster_name, { "stat": "Average" }],
+            ["AWS/ECS", "CPUReservation", "ClusterName", local.ecs_cluster_name, { "stat": "Average" }],
+            ["AWS/ECS", "MemoryReservation", "ClusterName", local.ecs_cluster_name, { "stat": "Average" }]
+          ]
+          region = var.aws_region
+          title  = "ECS Cluster Utilization"
         }
       },
       # Error Tracking Section
