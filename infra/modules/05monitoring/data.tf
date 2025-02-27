@@ -1,7 +1,7 @@
-# Temporarily removed during destroy
-data "aws_dynamodb_table" "terraform_locks" {
-  name = "isaac-${terraform.workspace}-terraform-locks"
-}
+
+# data "aws_dynamodb_table" "terraform_locks" {
+#   name = "isaac-${terraform.workspace}-terraform-locks"
+# }
 
 # data "aws_s3_bucket" "terraform_state" {
 #   bucket = "isaac-tfstate"
