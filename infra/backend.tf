@@ -99,44 +99,44 @@ resource "aws_s3_bucket_lifecycle_configuration" "terraform_state" {
   }
 }
 
-resource "aws_kms_key" "terraform_state" {
-  description         = "KMS key for Terraform state"
-  enable_key_rotation = true
-  is_enabled          = true
-  policy = templatefile("${path.module}/policies/kms-policy.json", {
-    account_id = data.aws_caller_identity.current.account_id
-  })
+# resource "aws_kms_key" "terraform_state" {
+#   description         = "KMS key for Terraform state"
+#   enable_key_rotation = true
+#   is_enabled          = true
+#   policy = templatefile("${path.module}/policies/kms-policy.json", {
+#     account_id = data.aws_caller_identity.current.account_id
+#   })
 
-  tags = local.common_tags
-}
+#   tags = local.common_tags
+# }
 
-resource "aws_kms_alias" "terraform_state_alias" {
-  name          = "alias/${local.name_prefix}-terraform-state"
-  target_key_id = aws_kms_key.terraform_state.key_id
-}
+# resource "aws_kms_alias" "terraform_state_alias" {
+#   name          = "alias/${local.name_prefix}-terraform-state"
+#   target_key_id = aws_kms_key.terraform_state.key_id
+# }
 
-# DynamoDB table for state locking
-resource "aws_dynamodb_table" "terraform_locks" {
-  name         = "${local.name_prefix}-terraform-locks"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "LockID"
+# # DynamoDB table for state locking
+# resource "aws_dynamodb_table" "terraform_locks" {
+#   name         = "${local.name_prefix}-terraform-locks"
+#   billing_mode = "PAY_PER_REQUEST"
+#   hash_key     = "LockID"
 
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
+#   attribute {
+#     name = "LockID"
+#     type = "S"
+#   }
 
-  # Enable point-in-time recovery
-  point_in_time_recovery {
-    enabled = true
-  }
+#   # Enable point-in-time recovery
+#   point_in_time_recovery {
+#     enabled = true
+#   }
 
-  # Enable server-side encryption
-  server_side_encryption {
-    enabled     = true
-    kms_key_arn = aws_kms_key.terraform_state.arn
-  }
+#   # Enable server-side encryption
+#   server_side_encryption {
+#     enabled     = true
+#     kms_key_arn = aws_kms_key.terraform_state.arn
+#   }
 
-  tags = local.common_tags
-}
+#   tags = local.common_tags
+# }
 

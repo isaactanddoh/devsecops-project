@@ -17,16 +17,6 @@
     {
       "Effect": "Allow",
       "Action": [
-        "dynamodb:GetItem",
-        "dynamodb:PutItem",
-        "dynamodb:DeleteItem",
-        "dynamodb:UpdateItem"
-      ],
-      "Resource": "${terraform_locks_table_arn}"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
         "ecs:*"
       ],
       "Resource": [

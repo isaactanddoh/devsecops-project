@@ -1,7 +1,7 @@
 # Store VPC and Subnet IDs in SSM
 resource "aws_ssm_parameter" "vpc_id" {
   name  = "/isaac-${terraform.workspace}/vpc_id"
-  type  = "String"
+  type  = "SecureString"
   value = aws_vpc.main.id
   tags  = local.common_tags
   depends_on = [aws_vpc.main]
