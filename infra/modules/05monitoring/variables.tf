@@ -34,11 +34,6 @@ variable "environment" {
   type        = string
 }
 
-# variable "ecs_cluster_name" {
-#   description = "Name of the ECS cluster"
-#   type        = string
-# }
-
 variable "log_retention_days" {
   description = "Number of days to retain CloudWatch logs"
   type        = number

@@ -152,14 +152,3 @@ resource "aws_s3_bucket_policy" "reports_bucket_policy" {
     ]
   })
 }
-
-# Output the bucket name and ARN
-output "security_reports_bucket_name" {
-  description = "The name of the security reports bucket"
-  value       = aws_s3_bucket.security_reports.id
-}
-
-output "security_reports_bucket_arn" {
-  description = "The ARN of the security reports bucket"
-  value       = aws_s3_bucket.security_reports.arn
-} 

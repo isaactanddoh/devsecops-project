@@ -38,6 +38,8 @@ resource "aws_subnet" "public" {
   #checkov:skip=CKV_AWS_130: "Ensure VPC subnets do not assign public IP by default"
 }
 
+
+# Create Private Subnets
 resource "aws_subnet" "private" {
   count             = var.availability_zones_count
   vpc_id            = aws_vpc.main.id
@@ -60,6 +62,8 @@ resource "aws_eip" "nat_eip" {
   })
 }
 
+
+# Create NAT Gateway
 resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat_eip.id
   subnet_id     = aws_subnet.public[0].id

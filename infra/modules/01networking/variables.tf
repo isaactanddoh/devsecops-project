@@ -15,7 +15,6 @@ variable "subnet_cidrs" {
 }
 
 #Allowed CIDR Blocks
-
 variable "allowed_cidr_blocks" {
   description = "List of allowed CIDR blocks for ALB access"
   type        = list(string)

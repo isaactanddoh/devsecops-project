@@ -24,8 +24,3 @@ output "alb_security_group_id" {
   description = "ID of the ALB security group"
   value       = aws_security_group.alb_sg.id
 }
-
-# output "network_acls_configured" {
-#   description = "Status of Network ACLs configuration"
-#   value       = length(aws_network_acl_rule.private) > 0
-# }

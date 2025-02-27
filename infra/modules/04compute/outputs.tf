@@ -101,16 +101,6 @@ output "ecs_task_execution_role_arn" {
   value       = aws_iam_role.ecs_task_execution_role.arn
 }
 
-# output "ecs_service_discovery_enabled" {
-#   description = "Status of ECS service discovery"
-#   value       = aws_service_discovery_service.ecs.id != null
-# }
-
-# output "container_insights_enabled" {
-#   description = "Status of Container Insights"
-#   value       = aws_ecs_cluster.ecs_cluster.setting[*].value == ["enabled"]
-# }
-
 output "ecs_service_discovery_enabled" {
   description = "Whether service discovery is enabled"
   value       = true
@@ -143,14 +133,3 @@ output "memory_utilization_alarm_enabled" {
   description = "Whether memory utilization alarm is enabled"
   value       = try(aws_cloudwatch_metric_alarm.memory_utilization.id != "", false)
 }
-
-# Backup outputs
-# output "backup_plan_enabled" {
-#   description = "Status of backup plan"
-#   value       = aws_backup_plan.backup_plan.id != null
-# }
-
-# output "backup_selection_resources_configured" {
-#   description = "Status of backup selection resources"
-#   value       = aws_backup_selection.backup_selection.id != null
-# }
