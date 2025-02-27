@@ -82,6 +82,7 @@ resource "aws_ssm_parameter" "igw_id" {
   #checkov:skip=CKV2_AWS_34: "AWS SSM Parameter should be Encrypted"
 }
 
+# Store Public Route Table ID in SSM
 resource "aws_ssm_parameter" "public_rt_id" {
   name  = "/${local.name_prefix}-${terraform.workspace}/public_rt_id"
   type  = "String"
@@ -116,15 +117,4 @@ resource "aws_ssm_parameter" "nat_id" {
 
   #checkov:skip=CKV2_AWS_34: "AWS SSM Parameter should be Encrypted"
 }
-
-# resource "aws_ssm_parameter" "private_nacl_id" {
-#   name  = "/${local.name_prefix}-${terraform.workspace}/private_nacl_id"
-#   type  = "String"
-#   value = aws_network_acl.private.id
-#   depends_on = [aws_network_acl.private]
-
-#   tags = local.common_tags
-
-#   #checkov:skip=CKV2_AWS_34: "AWS SSM Parameter should be Encrypted"
-# }
 

@@ -36,7 +36,6 @@ resource "aws_iam_policy" "terraform_policy" {
 
   policy = templatefile("${path.module}/policies/terraform-policy.json", {
     terraform_state_bucket_arn = aws_s3_bucket.terraform_state.arn
-    # terraform_locks_table_arn  = aws_dynamodb_table.terraform_locks.arn
     region                     = var.aws_region
     account_id                 = data.aws_caller_identity.current.account_id
   })

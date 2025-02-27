@@ -54,6 +54,7 @@ output "state_bucket_versioning_enabled" {
   value = true
 }
 
+
 output "state_bucket_replication_enabled" {
   description = "Status of S3 state bucket cross-region replication"
   value = true

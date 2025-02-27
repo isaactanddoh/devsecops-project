@@ -24,7 +24,7 @@ output "flow_logs_config" {
   description = "Flow logs configuration details"
   value = {
     log_group_name = aws_cloudwatch_log_group.vpc_flow_logs.name
-    enabled        = true  # Since the resource will be created by Terraform
+    enabled        = true
     retention_days = aws_cloudwatch_log_group.vpc_flow_logs.retention_in_days
   }
 

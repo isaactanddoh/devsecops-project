@@ -29,15 +29,3 @@ output "alb_arn_suffix" {
   description = "ARN Suffix of the ALB for CloudWatch metrics"
   value       = aws_lb.alb.arn_suffix
 }
-
-# # Output HTTP Listener ARN
-# output "alb_http_listener_arn" {
-#   description = "The ARN of the ALB HTTP listener"
-#   value       = aws_lb_listener.http_redirect.arn
-# }
-
-# Output HTTPS Listener ARN
-# output "alb_https_listener_arn" {
-#   description = "The ARN of the ALB HTTPS listener"
-#   value       = aws_lb_listener.https_listener.arn
-# }
