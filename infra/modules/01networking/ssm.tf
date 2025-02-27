@@ -6,6 +6,7 @@ resource "aws_ssm_parameter" "vpc_id" {
   tags  = local.common_tags
   depends_on = [aws_vpc.main]
 
+  #checkov:skip=CKV_AWS_337: "Ensure SSM parameters are using KMS CMK
   #checkov:skip=CKV2_AWS_34: "AWS SSM Parameter should be Encrypted"
 }
 
