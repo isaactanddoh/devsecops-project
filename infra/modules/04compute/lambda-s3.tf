@@ -1,17 +1,17 @@
-# null resource to handle replication and objectremoval when destroying
-resource "null_resource" "lambda_bucket_remove_replication" {
-  triggers = {
-    bucket_id = aws_s3_bucket.lambda_bucket.id
-  }
+# # null resource to handle replication and objectremoval when destroying
+# resource "null_resource" "lambda_bucket_remove_replication" {
+#   triggers = {
+#     bucket_id = aws_s3_bucket.lambda_bucket.id
+#   }
 
-  provisioner "local-exec" {
-    when    = destroy
-    command = <<EOF
-    aws s3api delete-bucket-replication --bucket ${self.triggers.bucket_id}
-    aws s3 rm s3://${self.triggers.bucket_id} --recursive
-    EOF
-  }
-}
+#   provisioner "local-exec" {
+#     when    = destroy
+#     command = <<EOF
+#     aws s3api delete-bucket-replication --bucket ${self.triggers.bucket_id}
+#     aws s3 rm s3://${self.triggers.bucket_id} --recursive
+#     EOF
+#   }
+# }
 
 #create a bucket for lambda
 resource "aws_s3_bucket" "lambda_bucket" {
@@ -28,12 +28,6 @@ resource "aws_s3_bucket" "lambda_bucket" {
   #checkov:skip=CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
   #checkov:skip=CKV2_AWS_62: "Ensure S3 buckets should have event notifications enabled"
 }
-
-# #enable private access
-# resource "aws_s3_bucket_acl" "lambda_bucket_acl" {
-#   bucket = aws_s3_bucket.lambda_bucket.id
-#   acl    = "private"
-# }
 
 #enable versioning
 resource "aws_s3_bucket_versioning" "lambda_bucket_versioning" {

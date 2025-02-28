@@ -4,6 +4,12 @@ variable "project_name" {
   type        = string
 }
 
+# # Name
+# variable "name" {
+#   description = "Name of the project"
+#   type        = string
+# }
+
 # IAM Certificate Name
 variable "iam_cert_name" {
   description = "The name of the IAM certificate"

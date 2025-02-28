@@ -1,3 +1,10 @@
+
+# # Project Name
+# variable "name" {
+#   description = "Project name"
+#   type        = string
+# }
+
 # VPC CIDR Block
 variable "vpc_cidr" {
   description = "CIDR block for the VPC"
