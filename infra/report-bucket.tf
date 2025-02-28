@@ -1,17 +1,17 @@
-# null resource to handle replication and objectremoval when destroying
-resource "null_resource" "remove_report_replication" {
-  triggers = {
-    bucket_id = aws_s3_bucket.security_reports.id
-  }
+# # null resource to handle replication and objectremoval when destroying
+# resource "null_resource" "remove_report_replication" {
+#   triggers = {
+#     bucket_id = aws_s3_bucket.security_reports.id
+#   }
 
-  provisioner "local-exec" {
-    when    = destroy
-    command = <<EOF
-    aws s3api delete-bucket-replication --bucket ${self.triggers.bucket_id}
-    aws s3 rm s3://${self.triggers.bucket_id} --recursive
-    EOF
-  }
-}
+#   provisioner "local-exec" {
+#     when    = destroy
+#     command = <<EOF
+#     aws s3api delete-bucket-replication --bucket ${self.triggers.bucket_id}
+#     aws s3 rm s3://${self.triggers.bucket_id} --recursive
+#     EOF
+#   }
+# }
 
 # KMS key for bucket encryption
 resource "aws_kms_key" "report_bucket_key" {
