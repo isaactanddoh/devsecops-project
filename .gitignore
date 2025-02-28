@@ -152,10 +152,17 @@ tfplan.json
 
 # Environment files
 *.tfvars
-!terraform.tfvars.dev
-!terraform.tfvars.staging
-!terraform.tfvars.prod
+terraform.tfvars.dev
+terraform.tfvars.staging
+terraform.tfvars.prod
 
 # Local files
 .DS_Store
 *.log
+
+# Ingnore files in the infra/environments folder
+environments\*
+infra\environments\*
+
+
+
