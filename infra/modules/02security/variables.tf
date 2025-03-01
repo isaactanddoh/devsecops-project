@@ -1,3 +1,10 @@
+
+# Project Name
+variable "project_name" {
+  description = "Project name"
+  type        = string
+}
+
 # AWS Region
 variable "aws_region" {
   description = "AWS region to deploy resources"
@@ -6,11 +13,6 @@ variable "aws_region" {
 
 variable "owner" {
   description = "Owner of the project"
-  type        = string
-}
-
-variable "project_name" {
-  description = "Name of the project"
   type        = string
 }
 

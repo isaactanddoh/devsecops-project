@@ -2,6 +2,7 @@
 module "networking" {
   source                   = "./modules/01networking"
   allowed_cidr_blocks      = var.allowed_cidr_blocks
+  project_name             = var.project_name
   subnet_cidrs             = var.subnet_cidrs
   environment              = terraform.workspace
   vpc_cidr                 = var.vpc_cidr
@@ -55,6 +56,7 @@ module "monitoring" {
   owner                    = var.owner
   alb_arn_suffix           = module.load_balancer.alb_arn_suffix
   alert_email_address      = var.alert_email_address
+  security_alert_email_address = var.security_alert_email_address
   log_retention_days       = lookup(local.workspace_config[terraform.workspace], "log_retention_days", 30)
   flow_logs_retention_days = lookup(local.workspace_config[terraform.workspace], "flow_logs_retention_days", 30)
   cpu_threshold            = lookup(local.workspace_config[terraform.workspace], "cpu_threshold", 80)

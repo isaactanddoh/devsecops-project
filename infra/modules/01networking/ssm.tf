@@ -1,6 +1,6 @@
 # Store VPC and Subnet IDs in SSM
 resource "aws_ssm_parameter" "vpc_id" {
-  name  = "/isaac-${terraform.workspace}/vpc_id"
+  name  = "/${local.name_prefix}-${terraform.workspace}/vpc_id"
   type  = "SecureString"
   value = aws_vpc.main.id
   tags  = local.common_tags
@@ -12,7 +12,7 @@ resource "aws_ssm_parameter" "vpc_id" {
 
 # Store Public Subnet IDs in SSM
 resource "aws_ssm_parameter" "public_subnet_ids" {
-  name  = "/isaac-${terraform.workspace}/public_subnet_ids"
+  name  = "/${local.name_prefix}-${terraform.workspace}/public_subnet_ids"
   type  = "StringList"
   value = join(",", aws_subnet.public[*].id)
   
@@ -25,7 +25,7 @@ resource "aws_ssm_parameter" "public_subnet_ids" {
 
 # Store Private Subnet IDs in SSM
 resource "aws_ssm_parameter" "private_subnet_ids" {
-  name  = "/isaac-${terraform.workspace}/private_subnet_ids"
+  name  = "/${local.name_prefix}-${terraform.workspace}/private_subnet_ids"
   type  = "StringList"
   value = join(",", aws_subnet.private[*].id)
   
@@ -38,7 +38,7 @@ resource "aws_ssm_parameter" "private_subnet_ids" {
 
 # Store ECS Security Group ID in SSM
 resource "aws_ssm_parameter" "ecs_sg_id" {
-  name  = "/isaac-${terraform.workspace}/ecs_sg_id"
+  name  = "/${local.name_prefix}-${terraform.workspace}/ecs_sg_id"
   type  = "String"
   value = aws_security_group.ecs_sg.id
   tags  = local.common_tags
@@ -49,7 +49,7 @@ resource "aws_ssm_parameter" "ecs_sg_id" {
 
 # Store ALB Security Group ID in SSM
 resource "aws_ssm_parameter" "alb_sg_id" {
-  name  = "/isaac-${terraform.workspace}/alb_sg_id"
+  name  = "/${local.name_prefix}-${terraform.workspace}/alb_sg_id"
   type  = "String"
   value = aws_security_group.alb_sg.id
   depends_on = [aws_security_group.alb_sg]
@@ -61,7 +61,7 @@ resource "aws_ssm_parameter" "alb_sg_id" {
 
 # Store Lambda Security Group ID in SSM
 resource "aws_ssm_parameter" "lambda_sg_id" {
-  name  = "/isaac-${terraform.workspace}/lambda_sg_id"
+  name  = "/${local.name_prefix}-${terraform.workspace}/lambda_sg_id"
   type  = "String"
   value = aws_security_group.lambda_sg.id
   depends_on = [aws_security_group.lambda_sg]

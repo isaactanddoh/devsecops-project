@@ -159,8 +159,6 @@ terraform.*
 *.log
 
 # Ingnore files in the infra/environments folder
-environments\*
-infra\environments\*
-infra/environments/*
-
-
+# environments\*
+# infra\environments\*
+# infra/environments/*

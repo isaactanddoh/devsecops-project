@@ -10,36 +10,36 @@ data "archive_file" "lambda_zip" {
 
 # Add SSM Parameter data sources
 data "aws_ssm_parameter" "ecs_sg_id" {
-  name = "/isaac-${terraform.workspace}/ecs_sg_id"
+  name = "/${local.name_prefix}-${terraform.workspace}/ecs_sg_id"
 }
 
 # Fetch Lambda Security Group ID from SSM Parameter Store
 data "aws_ssm_parameter" "lambda_sg_id" {
-  name = "/isaac-${terraform.workspace}/lambda_sg_id"
+  name = "/${local.name_prefix}-${terraform.workspace}/lambda_sg_id"
 }
 
 # Fetch VPC ID from SSM Parameter Store
 data "aws_ssm_parameter" "vpc_id" {
-  name = "/isaac-${terraform.workspace}/vpc_id"
+  name = "/${local.name_prefix}-${terraform.workspace}/vpc_id"
 }
 
 # Fetch Subnet IDs from SSM Parameter Store
 data "aws_ssm_parameter" "public_subnet_ids" {
-  name = "/isaac-${terraform.workspace}/public_subnet_ids"
+  name = "/${local.name_prefix}-${terraform.workspace}/public_subnet_ids"
 }
 
 data "aws_ssm_parameter" "private_subnet_ids" {
-  name = "/isaac-${terraform.workspace}/private_subnet_ids"
+  name = "/${local.name_prefix}-${terraform.workspace}/private_subnet_ids"
 }
 
 # Fetch ALB Target Group ARN from SSM Parameter Store
 data "aws_ssm_parameter" "alb_target_group_arn" {
-  name = "/isaac-${terraform.workspace}/alb_target_group_arn"
+  name = "/${local.name_prefix}-${terraform.workspace}/alb_target_group_arn"
 } 
 
 # Fetch SNS Topic ARN from SSM Parameter Store
 data "aws_ssm_parameter" "sns_topic_arn" {
-  name = "/isaac-${terraform.workspace}/sns_topic_arn"
+  name = "/${local.name_prefix}-${terraform.workspace}/sns_topic_arn"
 }
 
 # Fetch Amazon ECS Task Execution Role Policy
@@ -74,12 +74,12 @@ data "aws_cloudwatch_log_group" "app_logs" {
 
 # Fetch WAF ACL ID
 data "aws_ssm_parameter" "waf_acl_id" {
-  name = "/isaac-${terraform.workspace}/waf_acl_id"
+  name = "/${local.name_prefix}-${terraform.workspace}/waf_acl_id"
 }
 
 # Fetch GuardDuty Detector ID
 data "aws_ssm_parameter" "guardduty_detector_id" {
-  name = "/isaac-${terraform.workspace}/guardduty_detector_id"
+  name = "/${local.name_prefix}-${terraform.workspace}/guardduty_detector_id"
 }
 
 

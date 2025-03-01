@@ -13,7 +13,7 @@ resource "aws_sns_topic" "security_alerts" {
 resource "aws_sns_topic_subscription" "security_alerts_email" {
   topic_arn = aws_sns_topic.security_alerts.arn
   protocol  = "email"
-  endpoint  = var.alert_email_address
+  endpoint  = var.security_alert_email_address
 
   #checkov:skip=CKV_AWS_26: "Ensure all data stored in the SNS topic is encrypted"
 } 

@@ -4,12 +4,6 @@ variable "project_name" {
   type        = string
 }
 
-# # Name
-# variable "name" {
-#   description = "Name of the project"
-#   type        = string
-# }
-
 # IAM Certificate Name
 variable "iam_cert_name" {
   description = "The name of the IAM certificate"
@@ -149,6 +143,12 @@ variable "app_repo" {
 # Alert Email Address
 variable "alert_email_address" {
   description = "Email address for infrastructure alerts"
+  type        = string
+}
+
+# Security Alert Email Address
+variable "security_alert_email_address" {
+  description = "Email address for security alerts"
   type        = string
 }
 

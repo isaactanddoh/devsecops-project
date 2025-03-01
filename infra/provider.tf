@@ -15,13 +15,13 @@ provider "aws" {
   }
 }
 
-# terraform backend
-terraform {
-  backend "s3" {
-    bucket         = "isaac-tfstate"
-    key            = "infra/terraform.tfstate"
-    region         = "eu-west-1"
-    encrypt        = true
-    use_lockfile   = true
-  }
-}
+# # terraform backend
+# terraform {
+#   backend "s3" {
+#     bucket         = "isaac-tfstate"
+#     key            = "infra/terraform.tfstate"
+#     region         = "eu-west-1"
+#     encrypt        = true
+#     use_lockfile   = true
+#   }
+# }
