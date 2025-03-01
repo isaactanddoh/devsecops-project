@@ -1,9 +1,9 @@
 
-# # Project Name
-# variable "name" {
-#   description = "Project name"
-#   type        = string
-# }
+# Project Name
+variable "project_name" {
+  description = "Project name"
+  type        = string
+}
 
 # VPC CIDR Block
 variable "vpc_cidr" {

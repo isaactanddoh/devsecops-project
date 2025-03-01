@@ -1,6 +1,6 @@
 locals {
   # Naming convention for resources
-  name_prefix = "isaac-${terraform.workspace}"
+  name_prefix = "${var.project_name}-${terraform.workspace}"
 
   ecs_cluster_name = "${local.name_prefix}-ecs-cluster"
   

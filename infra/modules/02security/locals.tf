@@ -1,7 +1,7 @@
 # Local variables
 locals {
   # Naming convention for resources
-  name_prefix = "isaac-${terraform.workspace}"
+  name_prefix = "${var.project_name}-${terraform.workspace}"
   
   # Common tags for all resources
   common_tags = {
