@@ -1,9 +1,9 @@
 locals {
   # Naming convention for resources
-  name_prefix = "isaac-${terraform.workspace}"
+  name_prefix = "${var.project_name}-${terraform.workspace}"
   github_actions_name = "thekloudwiz-gha-role"
 
-  bucket_name = "isaac-tfstate"
+  bucket_name = "${var.project_name}-tfstate-01032025"
 
   # Enhanced common tags for all resources
   common_tags = {
@@ -30,7 +30,7 @@ locals {
     }[terraform.workspace]
   }
 
-  ecs_cluster_name = terraform.workspace == "prod" ? "isaac-prod" : "isaac-${terraform.workspace}"
+  ecs_cluster_name = terraform.workspace == "prod" ? "${var.project_name}-prod" : "${var.project_name}-${terraform.workspace}"
 
   # Workspace specific configurations
   workspace_config = {

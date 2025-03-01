@@ -146,6 +146,12 @@ variable "alert_email_address" {
   type        = string
 }
 
+# Security Alert Email Address
+variable "security_alert_email_address" {
+  description = "Email address for security alerts"
+  type        = string
+}
+
 # Flow Logs Retention Days
 variable "flow_logs_retention_days" {
   description = "Number of days to retain VPC Flow Logs"

@@ -7,7 +7,7 @@ locals {
     Environment = terraform.workspace
     Managed_by  = "terraform"
     Owner       = "isaac"
-    Project     = "secure-ci-cd"
+    Project     = "${var.project_name}"
   }
 
   # Resource specific names

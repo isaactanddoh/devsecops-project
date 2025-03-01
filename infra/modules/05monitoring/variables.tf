@@ -3,6 +3,11 @@ variable "alert_email_address" {
   type        = string
 }
 
+variable "security_alert_email_address" {
+  description = "Email address to receive security alerts"
+  
+}
+
 variable "flow_logs_retention_days" {
   description = "Number of days to retain VPC Flow Logs"
   type        = number
