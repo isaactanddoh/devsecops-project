@@ -1,212 +1,118 @@
 name: Terraform Deployment Pipeline
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches: [ dev, staging, main ]
     paths:
-      - infra/**
-      - infra/**/*.tfvars.*
-      - '!.github/dependabot.yml'
-      - '!.github/workflows/terraform-cd.yml'
-      - '!.github/workflows/terraform-ci.yml'
-      - '!.github/workflows/security-dashboard.yml'
-      - '!.github/ISSUE_TEMPLATE/security-incident.yml'
-      - '!docs/**'
-      - '!README.md'
-      - '!.gitignore'
-
-
+      - 'infra/**'
+      - '.github/workflows/terraform-cd.yml'
   workflow_dispatch:
     inputs:
-      destroy:
-        description: 'Destroy infrastructure'
-        type: boolean
+      environment:
+        description: 'Environment to deploy to'
         required: true
-        default: false
-
-permissions:
-  id-token: write
-  contents: read
-  actions: read
-  pull-requests: write
-  checks: write
-
-defaults:
-  run:
-    working-directory: infra
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
 
 jobs:
-  deploy-dev:
-    if: github.ref == 'refs/heads/dev'
+  terraform-plan:
+    name: 'Terraform Plan'
+    # Only run if it's a manual trigger or if the PR was merged (not just closed)
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
     runs-on: ubuntu-latest
-    environment:
-      name: dev
-      url: ${{ steps.deploy.outputs.environment_url }}
-    concurrency: 
-      group: dev-environment
-      cancel-in-progress: false
+    defaults:
+      run:
+        working-directory: ./infra
     
+    env:
+      # Set environment based on trigger type and target branch
+      ENVIRONMENT: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || github.base_ref }}
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-    
-    - name: Configure AWS Credentials
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume: ${{ secrets.IAM_ROLE }}
         aws-region: eu-west-1
-        role-session-name: GitHubActionsDev
-    
-    - name: Terraform Init
-      run: terraform init
-    
-    - name: Select Dev Workspace
-      run: terraform workspace select dev || terraform workspace new dev
-    
-    - name: Terraform Plan
-      run: terraform plan -var-file="environments/terraform.tfvars.dev" -out=tfplan
+        role-session-name: GitHubActions
 
-    - name: Terraform Apply
-      run: terraform apply -auto-approve tfplan
-
-    - name: Notify Slack
-      if: always()
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-        text: "Dev Infrastructure Deployment ${{ job.status }}!"
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-  deploy-staging:
-    if: github.ref == 'refs/heads/staging'
-    runs-on: ubuntu-latest
-    environment:
-      name: staging
-      url: ${{ steps.deploy.outputs.environment_url }}
-    concurrency: 
-      group: staging-environment
-      cancel-in-progress: false
-    
-    steps:
-    - uses: actions/checkout@v4
-    
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
-    
-    - name: Configure AWS Credentials
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Select Workspace
+      run: terraform workspace select ${{ env.ENVIRONMENT }}
+
+    - name: Terraform Plan
+      run: |
+        terraform plan \
+          -var-file="environments/terraform.tfvars.${{ env.ENVIRONMENT }}" \
+          -out=tfplan
+
+    - name: Upload Terraform Plan
+      uses: actions/upload-artifact@v3
+      with:
+        name: tfplan
+        path: infra/tfplan
+
+  terraform-apply:
+    name: 'Terraform Apply'
+    needs: terraform-plan
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || github.base_ref }}
+    defaults:
+      run:
+        working-directory: ./infra
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume: ${{ secrets.IAM_ROLE }}
         aws-region: eu-west-1
-        role-session-name: GitHubActionsStaging
-    
-    - name: Terraform Init
-      run: terraform init
-    
-    - name: Select Staging Workspace
-      run: terraform workspace select staging || terraform workspace new staging
-    
-    - name: Terraform Plan
-      run: terraform plan -var-file="environments/terraform.tfvars.staging" -out=tfplan
+        role-session-name: GitHubActions
 
-    - name: Terraform Apply
-      run: terraform apply -auto-approve tfplan
-
-    - name: Notify Slack
-      if: always()
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-        text: "Staging Infrastructure Deployment ${{ job.status }}!"
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-  deploy-prod:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment:
-      name: prod
-      url: ${{ steps.deploy.outputs.environment_url }}
-    concurrency: 
-      group: prod-environment
-      cancel-in-progress: false
-    
-    steps:
-    - uses: actions/checkout@v4
-    
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
-    
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ secrets.IAM_ROLE }}
-        aws-region: eu-west-1
-        role-session-name: GitHubActionsProd
-    
+
     - name: Terraform Init
       run: terraform init
-    
-    - name: Select Prod Workspace
-      run: terraform workspace select prod || terraform workspace new prod
-    
-    - name: Terraform Plan
-      run: terraform plan -var-file="environments/terraform.tfvars.prod" -out=tfplan
+
+    - name: Select Workspace
+      run: terraform workspace select ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || github.base_ref }}
+
+    - name: Download Terraform Plan
+      uses: actions/download-artifact@v3
+      with:
+        name: tfplan
+        path: infra
 
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
 
-    - name: Notify Slack
+    - name: Notify Slack on Deployment
+      uses: slackapi/slack-github-action@v1.24.0
       if: always()
-      uses: 8398a7/action-slack@v3
       with:
-        status: ${{ job.status }}
-        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-        text: "Production Infrastructure Deployment ${{ job.status }}!"
+        channel-id: 'infrastructure'
+        slack-message: |
+          Infrastructure Deployment Status: ${{ job.status }}
+          Environment: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || github.base_ref }}
+          Triggered by: ${{ github.actor }}
+          Workflow: ${{ github.workflow }}
+          Event: ${{ github.event_name }}
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-  destroy:
-    if: github.event_name == 'workflow_dispatch' && inputs.destroy == true
-    runs-on: ubuntu-latest
-    environment:
-      name: ${{ github.ref_name }}
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-      
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.IAM_ROLE }}
-          aws-region: eu-west-1
-      
-      - name: Terraform Init
-        run: terraform init
-        working-directory: infra
-      
-      - name: Select Workspace
-        run: terraform workspace select ${{ github.ref_name }}
-        working-directory: infra
-      
-      - name: Terraform Destroy
-        run: terraform destroy -var-file="environments/terraform.tfvars.${{ github.ref_name }}" -auto-approve
-        working-directory: infra
-
-      - name: Notify Slack
-        if: always()
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-          text: "Infrastructure Destruction in ${{ github.ref_name }} environment ${{ job.status }}!"
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} 
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} 
