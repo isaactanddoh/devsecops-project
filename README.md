@@ -159,20 +159,62 @@ The project includes a comprehensive incident response system:
 - Make utility
 - Python 3.9+
 
-## 📁 Directory Structure 
+## 📁 Directory Structure
+
+```
+.
 ├── .github/
-│ └── workflows/ # GitHub Actions workflows
+│   └── workflows/
+│       ├── terraform-ci.yml      # CI workflow (format, validate, plan)
+│       ├── terraform-cd.yml      # CD workflow (plan, apply)
+│       └── terraform-destroy.yml # Destruction workflow
+├── docs/
+│   ├── screenshots/             # Infrastructure deployment snapshots
+│   │   ├── networking/         # VPC, subnets, routing screenshots
+│   │   ├── security/          # WAF, GuardDuty, Security Groups
+│   │   ├── compute/          # ECS clusters and tasks
+│   │   └── monitoring/       # CloudWatch dashboards and alerts
+│   └── security/
+│       ├── dashboard-config.yml    # Security dashboard configuration
+│       ├── incident-scenario.md    # Security incident scenarios and playbooks
+│       └── incident-response.md    # Incident response procedures
 ├── infra/
-│ ├── modules/ # Terraform modules
-│ │ ├── 01networking/ # VPC and network configuration
-│ │ ├── 02security/ # Security controls and WAF
-│ │ ├── 03load-balancer/# ALB configuration
-│ │ ├── 04compute/ # ECS and Lambda resources
-│ │ └── 05monitoring/ # CloudWatch and alerting
-│ ├── environments/ # Environment-specific configurations
-│ ├── policies/ # IAM and OPA policies
-│ └── tests/ # Terraform tests
-└── README.md # Project documentation
+│   ├── modules/
+│   │   ├── 01networking/        # VPC and network configuration
+│   │   ├── 02security/         # Security controls and WAF
+│   │   ├── 03load-balancer/    # ALB configuration
+│   │   ├── 04compute/          # ECS and Lambda resources
+│   │   └── 05monitoring/       # CloudWatch and alerting
+│   ├── environments/
+│   │   ├── terraform.tfvars.dev     # Dev environment variables
+│   │   ├── terraform.tfvars.staging # Staging environment variables
+│   │   └── terraform.tfvars.prod    # Production environment variables
+│   ├── policies/               # IAM and security policies
+│   ├── tests/                 # Infrastructure tests
+│   ├── backend.tf             # Terraform backend configuration
+│   ├── main.tf               # Main Terraform configuration
+│   ├── outputs.tf            # Output definitions
+│   ├── provider.tf           # Provider configuration
+│   └── variables.tf          # Variable definitions
+├── scripts/
+│   └── security_dashboard.py  # Security metrics dashboard
+└── README.md                 # Project documentation
+```
+
+## 📸 Infrastructure Documentation
+
+### Deployment Screenshots
+The `docs/screenshots` directory contains visual documentation of the deployed infrastructure:
+- Network Architecture
+- Security Controls
+- ECS Deployments
+- Monitoring Dashboards
+
+### Security Documentation
+The `docs/security` directory contains:
+- **Dashboard Configuration** (`dashboard-config.yml`): Security metrics and alerts configuration
+- **Incident Scenarios** (`incident-scenario.md`): Common security incident playbooks
+- **Incident Response** (`incident-response.md`): Step-by-step incident response procedures
 
 ## 🚀 Environment Configuration
 
