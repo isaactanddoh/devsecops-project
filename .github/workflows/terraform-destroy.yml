@@ -16,6 +16,13 @@ on:
         required: true
         type: string
 
+permissions:
+  id-token: write
+  contents: read
+  actions: read
+  pull-requests: write
+  checks: write
+
 jobs:
   terraform-destroy:
     name: 'Terraform Destroy'
@@ -54,15 +61,12 @@ jobs:
           -var-file="environments/terraform.tfvars.${{ github.event.inputs.environment }}" \
           -auto-approve
 
-    - name: Notify Slack on Destruction
-      uses: slackapi/slack-github-action@v1.24.0
+    - name: Notify Slack
       if: always()
+      uses: 8398a7/action-slack@v3
       with:
-        channel-id: 'infrastructure'
-        slack-message: |
-          Infrastructure Destruction Status: ${{ job.status }}
-          Environment: ${{ github.event.inputs.environment }}
-          Triggered by: ${{ github.actor }}
-          Workflow: ${{ github.workflow }}
+        status: ${{ job.status }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+        text: "Validation for ${{ github.base_ref }} environment ${{ job.status }}!"
       env:
-        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }} 
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

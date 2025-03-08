@@ -110,16 +110,12 @@ jobs:
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
 
-    - name: Notify Slack on Deployment
-      uses: slackapi/slack-github-action@v1.24.0
+    - name: Notify Slack
       if: always()
+      uses: 8398a7/action-slack@v3
       with:
-        channel-id: 'infrastructure'
-        slack-message: |
-          Infrastructure Deployment Status: ${{ job.status }}
-          Environment: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || github.base_ref }}
-          Triggered by: ${{ github.actor }}
-          Workflow: ${{ github.workflow }}
-          Event: ${{ github.event_name }}
+        status: ${{ job.status }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+        text: "Validation for ${{ github.base_ref }} environment ${{ job.status }}!"
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} 
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
