@@ -1,6 +1,6 @@
 .PHONY: test-opa test-all clean
 
-test-all: test-opa
+test-all: test-opa clean
 
 test-opa:
 	@echo "Running OPA policy checks..."
@@ -40,4 +40,4 @@ test-opa:
 	@echo "All OPA policy checks passed!"
 
 clean:
-	rm -f tfplan.binary tfplan.json
+	@rm -f tfplan.binary tfplan.json

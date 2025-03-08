@@ -30,6 +30,7 @@ resource "aws_lambda_function" "guardduty_lambda" {
       WEB_ACL_ID = var.waf_acl_id
       SNS_TOPIC_ARN = data.aws_ssm_parameter.sns_topic_arn.value
     }
+    
     #checkov:skip=CKV_AWS_116: "Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)"
     #checkov:skip=CKV_AWS_173: "Check encryption settings for Lambda environmental variable"
     #checkov:skip=CKV_AWS_115: "Ensure that AWS Lambda function is configured for function-level concurrent execution limit"

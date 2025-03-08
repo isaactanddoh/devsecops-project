@@ -32,6 +32,7 @@ resource "aws_route_table" "public" {
     Name = "${local.name_prefix}-public-rt"
   })
 }
+
 # Associate route table with public subnets
 resource "aws_route_table_association" "public" {
   count          = var.availability_zones_count
