@@ -5,7 +5,8 @@ resource "aws_s3_bucket" "terraform_state" {
 
   # Prevent/Allow accidental deletion
   lifecycle {
-    prevent_destroy = true
+    # prevent_destroy = true
+    ignore_changes  = all
   }
 
   tags = local.common_tags
