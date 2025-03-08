@@ -152,7 +152,7 @@ tfplan.json
 
 # Environment files
 *.tfvars
-terraform.*
+# terraform.*
 
 # Local files
 .DS_Store

@@ -1,6 +1,6 @@
 .PHONY: test-opa test-all clean
 
-test-all: test-opa
+test-all: test-opa clean
 
 test-opa:
 	@echo "Running OPA policy checks..."
