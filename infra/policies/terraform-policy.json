@@ -33,7 +33,17 @@
         "ecr:BatchCheckLayerAvailability",
         "ecr:GetDownloadUrlForLayer",
         "ecr:BatchGetImage",
-        "ecr:PutImage"
+        "ecr:PutImage",
+        "ecr:DeleteLifecyclePolicy",
+        "application-autoscaling:DeleteScheduledAction",
+        "application-autoscaling:DeleteScalingPolicy",
+        "iam:DetachRolePolicy",
+        "logs:DeleteQueryDefinition",
+        "iam:ListInstanceProfilesForRole",
+        "s3:PutBucketPublicAccessBlock",
+        "s3:PutBucketVersioning"
+
+
       ],
       "Resource": "arn:aws:ecr:${region}:${account_id}:repository/*"
     },
