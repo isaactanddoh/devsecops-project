@@ -18,6 +18,13 @@ on:
           - staging
           - prod
 
+permissions:
+  id-token: write
+  contents: read
+  actions: read
+  pull-requests: write
+  checks: write
+
 jobs:
   terraform-plan:
     name: 'Terraform Plan'
