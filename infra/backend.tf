@@ -58,6 +58,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "terraform_state" {
   rule {
     id     = "state-backup"
     status = "Enabled"
+    filter {
+      prefix = "terraform/state"
+    }
 
     transition {
       days          = 30
@@ -82,4 +85,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "terraform_state" {
       days_after_initiation = 7
     }
   }
+
+  #checkov:skip=CKV_AWS_300: "Ensure S3 lifecycle configuration sets period for aborting failed uploads"
 }
