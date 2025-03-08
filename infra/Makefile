@@ -40,4 +40,4 @@ test-opa:
 	@echo "All OPA policy checks passed!"
 
 clean:
-	rm -f tfplan.binary tfplan.json
+	@rm -f tfplan.binary tfplan.json
