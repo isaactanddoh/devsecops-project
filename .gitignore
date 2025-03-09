@@ -163,3 +163,6 @@ tfplan.json
 # infra\environments\*
 # infra/environments/*
 # infra/environments/
+
+# Ignore files in the s3 folder
+s3/*

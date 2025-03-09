@@ -57,7 +57,7 @@ jobs:
       run: terraform init
 
     - name: Select Workspace
-      run: terraform workspace select ${{ env.ENVIRONMENT }}
+      run: terraform workspace select -or-create ${{ env.ENVIRONMENT }}
 
     - name: Terraform Plan
       run: |
@@ -99,7 +99,7 @@ jobs:
       run: terraform init
 
     - name: Select Workspace
-      run: terraform workspace select ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || github.base_ref }}
+      run: terraform workspace select -or-create ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || github.base_ref }}
 
     - name: Download Terraform Plan
       uses: actions/download-artifact@v4
@@ -116,6 +116,6 @@ jobs:
       with:
         status: ${{ job.status }}
         fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-        text: "Validation for ${{ github.base_ref }} environment ${{ job.status }}!"
+        text: "Deployment for ${{ github.base_ref }} environment ${{ job.status }}!"
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
