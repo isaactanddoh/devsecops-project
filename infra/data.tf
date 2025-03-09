@@ -22,4 +22,4 @@ data "aws_ssm_parameter" "cloudwatch_log_group_arn" {
 }
 
 # Get current AWS account ID
-data "aws_caller_identity" "current" {} 
+data "aws_caller_identity" "current" {}
