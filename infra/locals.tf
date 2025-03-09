@@ -97,4 +97,4 @@ locals {
       night_max_capacity = 2
     }
   }
-} 
+}
