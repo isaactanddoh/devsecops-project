@@ -18,4 +18,4 @@ locals {
     ? null
     : file("ERROR: Invalid workspace. Must be one of: ${join(", ", local.allowed_workspaces)}")
   )
-} 
+}

@@ -84,16 +84,15 @@ module "compute" {
   depends_on            = [module.load_balancer, module.monitoring]
 }
 
-# Create CloudWatch Access Environment
-module "cloudwatch_access" {
-  source            = "./modules/06cloudwatch-access"
-  aws_region        = var.aws_region
-  environment       = terraform.workspace
-  project_name      = var.project_name
-  owner            = var.owner
-  enable_sso       = var.enable_sso
-  sso_instance_arn = var.sso_instance_arn
-  team_member_names = var.team_member_names
-  depends_on       = [module.compute]
-}
-
+# # Create CloudWatch Access Environment
+# module "cloudwatch_access" {
+#   source            = "./modules/06cloudwatch-access"
+#   aws_region        = var.aws_region
+#   environment       = terraform.workspace
+#   project_name      = var.project_name
+#   owner            = var.owner
+#   enable_sso       = var.enable_sso
+#   sso_instance_arn = var.sso_instance_arn
+#   team_member_names = var.team_member_names
+#   depends_on       = [module.compute]
+# }
