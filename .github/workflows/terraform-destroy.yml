@@ -53,7 +53,7 @@ jobs:
       run: terraform init
 
     - name: Select Workspace
-      run: terraform workspace select ${{ github.event.inputs.environment }}
+      run: terraform workspace select -or-create ${{ github.event.inputs.environment }}
 
     - name: Terraform Destroy
       run: |
@@ -67,6 +67,7 @@ jobs:
       with:
         status: ${{ job.status }}
         fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-        text: "Validation for ${{ github.base_ref }} environment ${{ job.status }}!"
+        text: "Destruction for ${{ github.base_ref }} environment ${{ job.status }}!"
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        
