@@ -43,7 +43,6 @@
         "s3:PutBucketPublicAccessBlock",
         "s3:PutBucketVersioning"
 
-
       ],
       "Resource": "arn:aws:ecr:${region}:${account_id}:repository/*"
     },

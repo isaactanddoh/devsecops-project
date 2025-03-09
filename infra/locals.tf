@@ -3,7 +3,6 @@ locals {
   name_prefix = "${var.project_name}-${terraform.workspace}"
   github_actions_name = "thekloudwiz-gha-role"
 
-  bucket_name = "${var.project_name}-tfstate-01032025"
 
   # Enhanced common tags for all resources
   common_tags = {

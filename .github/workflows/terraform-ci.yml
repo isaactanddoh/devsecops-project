@@ -63,7 +63,7 @@ jobs:
         run: terraform init
 
       - name: Select Workspace
-        run: terraform workspace new $WORKSPACE || terraform workspace select $WORKSPACE
+        run: terraform workspace select -or-create $WORKSPACE
 
       - name: Terraform Format
         run: |
