@@ -166,3 +166,7 @@ infra/environments/
 # Ignore files in the s3 folder
 s3/*
 s3/policies/*
+github-oidc.tf
+local.tf
+report-bucket.tf
+state-bucket.tf
