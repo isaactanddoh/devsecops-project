@@ -22,7 +22,7 @@ variable "project_name" {
 
 variable "owner" {
   type    = string
-  default = "isaac"
+  default = "isaactanddoh"
 }
 
 variable "infra_repo" {
