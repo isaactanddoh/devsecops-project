@@ -2,9 +2,9 @@
 resource "null_resource" "workspace_setup" {
   provisioner "local-exec" {
     command = <<-EOT
-      terraform workspace new dev 2>nul || exit 0
-      terraform workspace new staging 2>nul || exit 0
-      terraform workspace new prod 2>nul || exit 0
+      terraform workspace select -or-create dev 2>nul || exit 0
+      terraform workspace select -or-create staging 2>nul || exit 0
+      terraform workspace select -or-create prod 2>nul || exit 0
     EOT
   }
 }
