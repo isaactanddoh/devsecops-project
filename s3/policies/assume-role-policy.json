@@ -1,0 +1,29 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "${github_provider_arn}"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+        },
+        "StringLike": {
+          "token.actions.githubusercontent.com:sub": [
+            "repo:${owner}/${infra_repo}:*",
+            "repo:${owner}/${infra_repo}:ref:refs/heads/*",
+            "repo:${owner}/${infra_repo}:pull_request",
+            "repo:${owner}/${infra_repo}:environment:*",
+            "repo:${owner}/${app_repo}:*",
+            "repo:${owner}/${app_repo}:ref:refs/heads/*",
+            "repo:${owner}/${app_repo}:pull_request",
+            "repo:${owner}/${app_repo}:environment:*"
+          ]
+        }
+      }
+    }
+  ]
+} 
