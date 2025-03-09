@@ -50,4 +50,4 @@ jobs:
             Security Dashboard Updated
             View at: s3://${{ secrets.REPORTS_BUCKET }}/security-dashboard/latest.txt
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} 
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
